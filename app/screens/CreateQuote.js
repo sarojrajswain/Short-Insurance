@@ -17,25 +17,18 @@ import useAuth from "../auth/useAuth";
 import useApi from "../hooks/useApi";
 import { Formik } from "formik";
 import CustomPicker from "../components/CustomPicker";
+import CustomSwitch from "../components/CustomSwitch";
+import CustomSwitchSelector from "../components/CustomSwitchSelector";
 
-const type = {
-  currencies: [
-    { country: "UK", value: "2", label: "Pound", id: 1 },
-    { country: "EU", value: "4", label: "Euro", id: 2 },
-  ],
-  currentLabel: "Select your currency",
-  currency: "",
-};
+const type = [
+  { country: "UK", value: "2", label: "Pound", id: 1 },
+  { country: "EU", value: "4", label: "Euro", id: 2 },
+];
 
-const make = {
-  currencies: [
-    { country: "UK", value: "GBP", label: "Pound", id: 1 },
-    { country: "EU", value: "EUR", label: "Euro", id: 2 },
-    { country: "USA", value: "USD", label: "USD Dollar", id: 3 },
-  ],
-  currentLabel: "Select your currency",
-  currency: "",
-};
+const limit = [
+  { value: "5000", label: "Pound", id: 1 },
+  { value: "10000", label: "Euro", id: 2 },
+];
 
 const model = {
   currencies: [
@@ -97,14 +90,13 @@ function CreateQuote({ navigation }) {
         <ScrollView>
           <AppForm
             initialValues={{
-              vType: "",
-              vehicleType: "4",
+              vehicleType: "",
               policy: {
                 limit: "5000",
                 areYouStudent: "false",
-                riderClub: "false",
+                partOfRiderClub: "false",
                 risk: {
-                  //vehicleType: "4",
+                  vehicleType: "4",
                   make: "",
                   model: "",
                   year: "",
@@ -119,10 +111,11 @@ function CreateQuote({ navigation }) {
               <AppText style={{ color: defaultStyles.colors.dark }}>
                 Vehicle Type
               </AppText>
+              <CustomSwitchSelector name="vehicleType" />
               <CustomPicker
                 placeholder="Type"
                 items={type}
-                name="vType"
+                name="policy.risk.vehicleType"
                 controlName="vType"
               />
             </View>
@@ -177,20 +170,35 @@ function CreateQuote({ navigation }) {
               <AppText style={{ color: defaultStyles.colors.dark }}>
                 Coverage Limit
               </AppText>
-              <CustomPicker placeholder="Type" items={type} />
+              <CustomPicker
+                placeholder="Limit"
+                name="policy.Limit"
+                items={limit}
+              />
             </View>
 
-            <View style={""}>
+            <View
+              style={{
+                marginVertical: 20,
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
               <AppText style={{ color: defaultStyles.colors.dark }}>
                 Are you a Student ?
               </AppText>
-              <CustomPicker placeholder="Type" items={type} />
+              <CustomSwitch name="policy.areYouStudent" />
             </View>
-            <View style={""}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
               <AppText style={{ color: defaultStyles.colors.dark }}>
-                Are you part of Rider Club ?
+                Are you part of rider club ?
               </AppText>
-              <CustomPicker placeholder="Type" items={type} />
+              <CustomSwitch name="ppolicy.artOfRiderClub" />
             </View>
             <SubmitButton title="Check Premium" />
           </AppForm>

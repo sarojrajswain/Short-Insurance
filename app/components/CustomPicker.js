@@ -7,27 +7,35 @@ import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import Screen from "./Screen";
 import PickerItem from "./PickerItem";
 import { Picker } from "@react-native-community/picker";
+import { useFormikContext } from "formik";
+import ErrorMessages from "../components/forms/ErrorMessages";
 
 export default function CustomPicker({
   icon,
   items,
   placeholder,
-  numberOfColumns = 1,
-  PickerItemComponent = PickerItem,
   selectedItem,
   onSelectItem,
+  name,
   width = "100%",
   controlName,
 }) {
+  const { errors, setFieldValue, touched, values } = useFormikContext();
+  const [value, setValue] = useState(placeholder);
   const [modalVisible, setModalVisible] = useState(false);
-  const [fieldValue, setFieldValue] = useState();
-  const [pickerValue, setPickerValue] = useState("");
+
+  const handleChange = (itemValue) => {
+    console.log(
+      "name:" + name + " value:" + itemValue + " values :" + values[name]
+    );
+    setFieldValue("policy.risk.vechileType", itemValue);
+    console.log("name:" + name + " value:" + itemValue + " value:" + value);
+  };
 
   return (
     <React.Fragment>
       <TouchableWithoutFeedback
         onPress={() => {
-          console.log("items: " + items.currencies[0].country);
           setModalVisible(true);
         }}
       >
@@ -38,13 +46,14 @@ export default function CustomPicker({
             color={defaultStyles.colors.medium}
             style={styles.icon}
           />
-          {fieldValue ? (
-            <AppText style={styles.text} name={controlName}>
-              {fieldValue}
+          {values[name] ? (
+            <AppText style={styles.text} name={name}>
+              {value}
             </AppText>
           ) : (
-            <AppText style={styles.placeholder} name={controlName}>
+            <AppText style={styles.placeholder} name={name}>
               {placeholder}
+              {value}
             </AppText>
           )}
           <MaterialCommunityIcons
@@ -54,6 +63,7 @@ export default function CustomPicker({
           />
         </View>
       </TouchableWithoutFeedback>
+
       <Modal
         visible={modalVisible}
         animationType="fade"
@@ -66,7 +76,7 @@ export default function CustomPicker({
               <Button onPress={() => setModalVisible(false)} title="close" />
               <Button
                 onPress={() => {
-                  setFieldValue(pickerValue);
+                  setValue(values[name]);
                   setModalVisible(false);
                 }}
                 title="ok"
@@ -74,14 +84,26 @@ export default function CustomPicker({
             </View>
           </View>
           <Picker
-            name={controlName}
-            value=""
+            name={name}
             style={{ width: "100%" }}
-            selectedValue={pickerValue}
-            onValueChange={(itemValue) => setPickerValue(itemValue)}
+            //selectedValue={placeholder}
+            onValueChange={(itemValue) => {
+              setFieldValue(name, itemValue);
+              console.log(
+                "name:" +
+                  name +
+                  " itemValue:" +
+                  itemValue +
+                  " nameValues:" +
+                  values?.name
+              );
+            }}
+            onSelectItem={() => {
+              setModalVisible(false);
+            }}
           >
             <Picker.Item label="Select currency" value="" />
-            {items.currencies.map((v) => {
+            {items.map((v) => {
               return (
                 <Picker.Item label={v.label} value={v.value} key={v.value} />
               );
@@ -93,6 +115,7 @@ export default function CustomPicker({
           
         </Screen> */}
       </Modal>
+      <ErrorMessages error={errors[name]} visible={touched[name]} />
     </React.Fragment>
   );
 }
