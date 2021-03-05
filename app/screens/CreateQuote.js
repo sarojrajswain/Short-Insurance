@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+// import { Picker } from "@react-native-community/picker";
 import { View, StyleSheet, KeyboardAvoidingView, Switch } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Screen from "../components/Screen";
@@ -11,22 +12,84 @@ import * as Yup from "yup";
 //import { Switch } from "react-native-switch";
 import SwitchSelector from "react-native-switch-selector";
 import AppText from "../components/AppText";
+import policyApi from "../api/policy";
+import useAuth from "../auth/useAuth";
+import useApi from "../hooks/useApi";
+import { Formik } from "formik";
+import CustomPicker from "../components/CustomPicker";
+
+const type = {
+  currencies: [
+    { country: "UK", value: "2", label: "Pound", id: 1 },
+    { country: "EU", value: "4", label: "Euro", id: 2 },
+  ],
+  currentLabel: "Select your currency",
+  currency: "",
+};
+
+const make = {
+  currencies: [
+    { country: "UK", value: "GBP", label: "Pound", id: 1 },
+    { country: "EU", value: "EUR", label: "Euro", id: 2 },
+    { country: "USA", value: "USD", label: "USD Dollar", id: 3 },
+  ],
+  currentLabel: "Select your currency",
+  currency: "",
+};
+
+const model = {
+  currencies: [
+    { country: "UK", value: "GBP", label: "Pound", id: 1 },
+    { country: "EU", value: "EUR", label: "Euro", id: 2 },
+    { country: "USA", value: "USD", label: "USD Dollar", id: 3 },
+  ],
+  currentLabel: "Select your currency",
+  currency: "",
+};
+
+const year = {
+  currencies: [
+    { country: "UK", value: "GBP", label: "Pound", id: 1 },
+    { country: "EU", value: "EUR", label: "Euro", id: 2 },
+    { country: "USA", value: "USD", label: "USD Dollar", id: 3 },
+  ],
+  currentLabel: "Select your currency",
+  currency: "",
+};
 
 const validationSchema = Yup.object().shape({
-  vehicleType: Yup.string().required().label("Vehicle Type"),
-  vehicleMake: Yup.string().required().label("Vehicle Make"),
-  vehicleModel: Yup.string().required().label("Vehicle Model"),
-  vehicleYear: Yup.string().required().label("Vehicle Year"),
-  purchaseYear: Yup.string().required().label("Purchase Year"),
-  coverageLimit: Yup.string().required().label("Coverage Limit"),
-  student: Yup.string().required().label("Student"),
-  rider: Yup.string().required().label("Rider"),
+  //vehicleType: Yup.string().required().label("Vehicle Type"),
+  "policy.risk.make": Yup.string().required().label("Vehicle Make"),
+  // vehicleModel: Yup.string().required().label("Vehicle Model"),
+  // vehicleYear: Yup.string().required().label("Vehicle Year"),
+  // coverageLimit: Yup.string().required().label("Coverage Limit"),
+  // student: Yup.string().required().label("Student"),
+  // rider: Yup.string().required().label("Rider"),
 });
 
-export default function CreateQuote(props) {
-  const [country, setCountry] = useState("uk");
-  const [isEnabled, setIsEnabled] = useState(false);
+function CreateQuote({ navigation }) {
+  const [vehicleType, setVehicleType] = useState("4");
+  // const [country, setCountry] = useState("uk");
+  // const [isEnabled, setIsEnabled] = useState(false);
   const rupeeSymbol = "\u20B9";
+  const quoteApi = useApi(policyApi.quotePreview);
+  const [error, setError] = useState();
+
+  const handleSubmit = async (quoteDetails) => {
+    console.log("quoteDetails" + quoteDetails);
+    const result = await quoteApi.request(quoteDetails);
+    console.log(result);
+    if (!result.ok) {
+      if (result.data) {
+        setError(result.data);
+      } else {
+        setError("An unexpected error occurred.");
+        console.log(result);
+      }
+      return;
+    }
+    navigation.navigate("Login");
+  };
 
   return (
     <Screen style={styles.container}>
@@ -34,160 +97,101 @@ export default function CreateQuote(props) {
         <ScrollView>
           <AppForm
             initialValues={{
-              vehicleType: "",
-              vehicleMake: "",
-              vehicleModel: "",
-              vehicleYear: "",
-              purchaseYear: "",
-              coverageLimit: "",
-              student: "",
-              rider: "",
+              vType: "",
+              vehicleType: "4",
+              policy: {
+                limit: "5000",
+                areYouStudent: "false",
+                riderClub: "false",
+                risk: {
+                  //vehicleType: "4",
+                  make: "",
+                  model: "",
+                  year: "",
+                  color: "",
+                  chacisNo: "",
+                },
+              },
             }}
-            onSubmit={(values) => console.log(values)}
-            validationSchema={validationSchema}
+            onSubmit={handleSubmit}
           >
-            {/* <DropDownPicker
-              placeholder="Select Vehicle Type"
-              name="vehicleType"
-              items={[
-                { label: "Two Wheel", value: "2W" },
-                { label: "Four Wheel", value: "4W" },
-              ]}
-              labelStyle={{
-                fontSize: 16,
-                textAlign: "left",
-                color: "#000",
-                textTransform: "capitalize",
-              }}
-              itemStyle={styles.dropDownItemStyle}
-              defaultValue=""
-              onChangeItem={(item) => setCountry(item.value)}
-              containerStyle={styles.dropDownContainerStyle}
-              style={styles.dropDownStyle}
-              dropDownStyle={styles.dropDownStyle}
-            /> */}
             <View>
               <AppText style={{ color: defaultStyles.colors.dark }}>
                 Vehicle Type
               </AppText>
-              <SwitchSelector
-                name="vehicleType"
-                style={styles.switchSelector}
-                initial={0}
-                onPress={(value) => console.log(value)}
-                textColor={defaultStyles.colors.tomato} //'#7a44cf'
-                selectedColor={"white"}
-                buttonColor={"purple"}
-                borderColor={"purple"}
-                options={[
-                  { label: "Two Wheel", value: "2" }, //images.feminino = require('./path_to/assets/img/feminino.png')
-                  { label: "Four Wheel", value: "4" }, //images.masculino = require('./path_to/assets/img/masculino.png')
-                ]}
+              <CustomPicker
+                placeholder="Type"
+                items={type}
+                name="vType"
+                controlName="vType"
               />
             </View>
             <View style={{ flexDirection: "column" }}>
               <AppText style={{ color: defaultStyles.colors.dark }}>
                 Vehicle Make
               </AppText>
-              <AppFormField placeholder="Vehicle Make" name="vehicleMake" />
+              <AppFormField
+                placeholder="Vehicle Make"
+                name="policy.risk.make"
+              />
             </View>
             <View style={{ flexDirection: "column" }}>
               <AppText style={{ color: defaultStyles.colors.dark }}>
                 Vehicle Model
               </AppText>
-              <AppFormField placeholder="Vehicle Model" name="vehicleModel" />
+              <AppFormField
+                placeholder="Vehicle Model"
+                name="policy.risk.model"
+              />
             </View>
             <View style={{ flexDirection: "column" }}>
               <AppText style={{ color: defaultStyles.colors.dark }}>
                 Vehicle Year
               </AppText>
-              <AppFormField placeholder="Vehicle Year" name="vehicleYear" />
+              <AppFormField
+                placeholder="Vehicle Year"
+                name="policy.risk.year"
+              />
             </View>
+
             <View style={{ flexDirection: "column" }}>
               <AppText style={{ color: defaultStyles.colors.dark }}>
-                Purchase Year
+                Vehicle Color
               </AppText>
-              <AppFormField placeholder="Purchase Year" name="purchaseYear" />
+              <AppFormField
+                placeholder="Vehicle Color"
+                name="policy.risk.color"
+              />
+            </View>
+
+            <View style={{ flexDirection: "column" }}>
+              <AppText style={{ color: defaultStyles.colors.dark }}>
+                Chacis Number
+              </AppText>
+              <AppFormField
+                placeholder="Chacis Number"
+                name="policy.risk.chacisNo"
+              />
             </View>
             <View style={{ flexDirection: "column" }}>
               <AppText style={{ color: defaultStyles.colors.dark }}>
                 Coverage Limit
               </AppText>
-              <SwitchSelector
-                name="coverageLimit"
-                style={styles.switchSelector}
-                style={{ paddingVertical: 10 }}
-                height={50}
-                initial={0}
-                onPress={(value) => console.log(value)}
-                textColor={defaultStyles.colors.medium} //'#7a44cf'
-                selectedColor={defaultStyles.colors.light}
-                buttonColor={defaultStyles.colors.secondary}
-                borderColor={"purple"}
-                options={[
-                  { label: rupeeSymbol + "2,500", value: "2.5k" }, //images.feminino = require('./path_to/assets/img/feminino.png')
-                  { label: rupeeSymbol + "5,000", value: "5k" }, //images.masculino = require('./path_to/assets/img/masculino.png')
-                  { label: rupeeSymbol + "10,000", value: "10k" },
-                ]}
-              />
+              <CustomPicker placeholder="Type" items={type} />
             </View>
+
             <View style={""}>
               <AppText style={{ color: defaultStyles.colors.dark }}>
                 Are you a Student ?
               </AppText>
-              <SwitchSelector
-                name="student"
-                style={{ paddingVertical: 10 }}
-                height={50}
-                width="50%"
-                initial={0}
-                onPress={(value) => console.log(value)}
-                textColor={defaultStyles.colors.medium} //'#7a44cf'
-                selectedColor={defaultStyles.colors.light}
-                buttonColor={defaultStyles.colors.green}
-                borderColor={"purple"}
-                options={[
-                  { label: "Yes", value: "True" }, //images.feminino = require('./path_to/assets/img/feminino.png')
-                  { label: "No", value: "False" }, //images.masculino = require('./path_to/assets/img/masculino.png')
-                ]}
-              />
+              <CustomPicker placeholder="Type" items={type} />
             </View>
             <View style={""}>
               <AppText style={{ color: defaultStyles.colors.dark }}>
                 Are you part of Rider Club ?
               </AppText>
-              <SwitchSelector
-                style={{ paddingVertical: 10 }}
-                initial={0}
-                height={50}
-                onPress={(value) => console.log(value)}
-                textColor={defaultStyles.colors.medium} //'#7a44cf'
-                selectedColor={defaultStyles.colors.light}
-                buttonColor={defaultStyles.colors.green}
-                borderColor={"purple"}
-                options={[
-                  { label: "Yes", value: "True" }, //images.feminino = require('./path_to/assets/img/feminino.png')
-                  { label: "No", value: "False" }, //images.masculino = require('./path_to/assets/img/masculino.png')
-                ]}
-              />
+              <CustomPicker placeholder="Type" items={type} />
             </View>
-
-            <Switch
-              activeText={"On"}
-              inActiveText={"Off"}
-              trackColor={{ false: "#767577", true: "#81b0ff" }}
-              thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={() =>
-                setIsEnabled((previousState) => !previousState)
-              }
-              value={isEnabled}
-              innerCircleStyle={{
-                alignItems: "center",
-                justifyContent: "center",
-              }} // style for inner animated circle for what you (may) be rendering inside the circle
-            />
-
             <SubmitButton title="Check Premium" />
           </AppForm>
         </ScrollView>
@@ -226,3 +230,5 @@ const styles = StyleSheet.create({
     borderStyle: "solid",
   },
 });
+
+export default CreateQuote;
