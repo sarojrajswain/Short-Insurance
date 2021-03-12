@@ -25,6 +25,7 @@ export default function AccountScreen({ navigation }) {
           title={user.email}
           subtitle={user.email}
           image={require("../assets/Saroj.jpg")}
+          onPress={() => navigation.navigate("AccountEdit")}
         />
       </View>
       <View style={styles.container}>

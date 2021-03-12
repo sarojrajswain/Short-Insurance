@@ -3,6 +3,7 @@ import { useFormikContext } from "formik";
 
 import AppPicker from "../AppPicker";
 import ErrorMessages from "./ErrorMessages";
+import _ from "lodash";
 
 function AppFormPicker({
   items,
@@ -21,9 +22,9 @@ function AppFormPicker({
         width={width}
         numberOfColumns={numberOfColumns}
         PickerItemComponent={PickerItemComponent}
-        onSelectItem={(item) => setFieldValue(name, item)}
+        onSelectItem={(item) => setFieldValue(name, item.value)}
         placeholder={placeholder}
-        selectedItem={values[name]}
+        selectedItem={_.get(values, name)}
       />
       <ErrorMessages error={errors[name]} visible={touched[name]} />
     </>

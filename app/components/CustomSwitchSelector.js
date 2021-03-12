@@ -1,28 +1,21 @@
 import React from "react";
-import { Switch, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { useFormikContext } from "formik";
 import ErrorMessages from "./forms/ErrorMessages";
 import defaultStyles from "../config/styles";
 import SwitchSelector from "react-native-switch-selector";
+import _ from "lodash";
 
-export default function CustomSwitchSelector({ name }) {
+export default function CustomSwitchSelector({ name, options }) {
   const { errors, setFieldValue, touched, values } = useFormikContext();
-
-  const handleChange = (itemValue) => {
-    setFieldValue(name, itemValue);
-  };
-
-  options = [
-    { label: "Yes", value: "True" }, //images.feminino = require('./path_to/assets/img/feminino.png')
-    { label: "No", value: "False" }, //images.masculino = require('./path_to/assets/img/masculino.png')
-  ];
 
   return (
     <React.Fragment>
       <SwitchSelector
+        style={styles.container}
         name={name}
         style={{ paddingVertical: 10 }}
-        initial={1}
+        initial={-1}
         height={60}
         onPress={(value) => setFieldValue(name, value)}
         //value={values[name]}
@@ -32,7 +25,10 @@ export default function CustomSwitchSelector({ name }) {
         borderColor={"purple"}
         options={options}
       />
-      <ErrorMessages error={errors[name]} visible={touched[name]} />
+      <ErrorMessages
+        error={_.get(errors, name)}
+        visible={_.get(touched, name)}
+      />
     </React.Fragment>
   );
 }

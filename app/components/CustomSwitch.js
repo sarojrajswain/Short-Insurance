@@ -1,19 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import { Switch, StyleSheet } from "react-native";
 import { useFormikContext } from "formik";
 import ErrorMessages from "./forms/ErrorMessages";
 import defaultStyles from "../config/styles";
 
 export default function CustomSwitch({ name }) {
-  const { errors, setFieldValue, touched, values } = useFormikContext();
-
-  const handleChange = (itemValue) => {
-    setFieldValue(name, itemValue);
-  };
+  const { errors, setFieldValue, touched } = useFormikContext();
+  const [selectedValue, setSelectedValue] = useState();
 
   return (
     <React.Fragment>
-      <Switch value={values[name]} onValueChange={handleChange}></Switch>
+      <Switch
+        name={name}
+        value={selectedValue}
+        onValueChange={(value) => {
+          setFieldValue(name, value);
+          setSelectedValue(value);
+        }}
+      ></Switch>
       <ErrorMessages error={errors[name]} visible={touched[name]} />
     </React.Fragment>
   );

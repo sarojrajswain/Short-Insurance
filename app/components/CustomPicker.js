@@ -1,36 +1,26 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Modal, Button, FlatList, Text } from "react-native";
+import { View, StyleSheet, Modal, Button } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import defaultStyles from "../config/styles";
 import AppText from "./AppText";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import Screen from "./Screen";
-import PickerItem from "./PickerItem";
 import { Picker } from "@react-native-community/picker";
 import { useFormikContext } from "formik";
 import ErrorMessages from "../components/forms/ErrorMessages";
+import NumberFormat from "react-number-format";
+import _ from "lodash";
 
 export default function CustomPicker({
   icon,
   items,
   placeholder,
-  selectedItem,
-  onSelectItem,
   name,
   width = "100%",
-  controlName,
 }) {
-  const { errors, setFieldValue, touched, values } = useFormikContext();
-  const [value, setValue] = useState(placeholder);
+  const { errors, setFieldValue, touched } = useFormikContext();
+  const [pickerValue, setPickerValue] = useState(placeholder);
   const [modalVisible, setModalVisible] = useState(false);
-
-  const handleChange = (itemValue) => {
-    console.log(
-      "name:" + name + " value:" + itemValue + " values :" + values[name]
-    );
-    setFieldValue("policy.risk.vechileType", itemValue);
-    console.log("name:" + name + " value:" + itemValue + " value:" + value);
-  };
+  const [selectedValue, setSelectedValue] = useState(placeholder);
 
   return (
     <React.Fragment>
@@ -46,14 +36,23 @@ export default function CustomPicker({
             color={defaultStyles.colors.medium}
             style={styles.icon}
           />
-          {values[name] ? (
+          {pickerValue ? (
+            // <NumberFormat
+            //   thousandSeparator={true}
+            //   thousandsGroupStyle="lakh"
+            //   displayType={"text"}
+            //   prefix={"₹"}
+            //   value={123456789}
+            //   renderText={(formattedvalue) => (
+            //     <AppText style={styles.text}>{formattedvalue}</AppText>
+            //   )}
+            // />
             <AppText style={styles.text} name={name}>
-              {value}
+              {pickerValue}
             </AppText>
           ) : (
             <AppText style={styles.placeholder} name={name}>
               {placeholder}
-              {value}
             </AppText>
           )}
           <MaterialCommunityIcons
@@ -63,65 +62,67 @@ export default function CustomPicker({
           />
         </View>
       </TouchableWithoutFeedback>
-
-      <Modal
-        visible={modalVisible}
-        animationType="fade"
-        transparent={true}
-        style={{ width: "100%", height: 200, backgroundColor: "yellow" }}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.pickerContainer}>
-            <View style={styles.pickerButtons}>
-              <Button onPress={() => setModalVisible(false)} title="close" />
-              <Button
-                onPress={() => {
-                  setValue(values[name]);
-                  setModalVisible(false);
-                }}
-                title="ok"
-              />
+      <View style={styles.viewContainer} visible={modalVisible}>
+        <Modal
+          visible={modalVisible}
+          animationType="fade"
+          transparent={true}
+          style={{ width: "100%", backgroundColor: "yellow" }}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.pickerContainer}>
+              <View style={styles.pickerButtons}>
+                <Button onPress={() => setModalVisible(false)} title="close" />
+                <Button
+                  onPress={() => {
+                    setPickerValue(selectedValue);
+                    setModalVisible(false);
+                  }}
+                  title="ok"
+                />
+              </View>
             </View>
+            <Picker
+              name={name}
+              style={{ width: "100%" }}
+              selectedValue={selectedValue}
+              onSelectItem={(item) => setFieldValue(name, item)}
+              onValueChange={(itemValue) => {
+                console.log(itemValue);
+                setFieldValue(name, itemValue);
+                setSelectedValue(itemValue);
+              }}
+              onSelectItem={() => {
+                setModalVisible(false);
+              }}
+            >
+              <Picker.Item label="Select currency" value="" />
+              {items.map((v) => {
+                return (
+                  <Picker.Item label={v.label} value={v.value} key={v.value} />
+                );
+              })}
+            </Picker>
           </View>
-          <Picker
-            name={name}
-            style={{ width: "100%" }}
-            //selectedValue={placeholder}
-            onValueChange={(itemValue) => {
-              setFieldValue(name, itemValue);
-              console.log(
-                "name:" +
-                  name +
-                  " itemValue:" +
-                  itemValue +
-                  " nameValues:" +
-                  values?.name
-              );
-            }}
-            onSelectItem={() => {
-              setModalVisible(false);
-            }}
-          >
-            <Picker.Item label="Select currency" value="" />
-            {items.map((v) => {
-              return (
-                <Picker.Item label={v.label} value={v.value} key={v.value} />
-              );
-            })}
-          </Picker>
-        </View>
-        {/* <Screen>
+          {/* <Screen>
           <Button onPress={() => setModalVisible(false)} title="close" />
           
         </Screen> */}
-      </Modal>
-      <ErrorMessages error={errors[name]} visible={touched[name]} />
+        </Modal>
+        <ErrorMessages
+          error={_.get(errors, name)}
+          visible={_.get(touched, name)}
+        />
+      </View>
     </React.Fragment>
   );
 }
 const styles = StyleSheet.create({
+  viewContainer: {
+    width: "100%",
+  },
   container: {
-    backgroundColor: defaultStyles.colors.light,
+    backgroundColor: defaultStyles.colors.white,
     marginVertical: 10,
     padding: 15,
     borderRadius: 25,
