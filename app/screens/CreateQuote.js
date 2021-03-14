@@ -17,25 +17,23 @@ import useAuth from "../auth/useAuth";
 import useApi from "../hooks/useApi";
 import { Formik } from "formik";
 import CustomPicker from "../components/CustomPicker";
+import CustomSwitch from "../components/CustomSwitch";
+import CustomSwitchSelector from "../components/CustomSwitchSelector";
+import policy from "../api/policy";
+import CustomDateTimePicker from "../components/CustomDateTimePicker";
+import NumberFormat from "react-number-format";
+import CustomCalendarPicker from "../components/CustomCalenderPicker";
+import AppFormPicker from "../components/forms/AppFormPicker";
 
-const type = {
-  currencies: [
-    { country: "UK", value: "2", label: "Pound", id: 1 },
-    { country: "EU", value: "4", label: "Euro", id: 2 },
-  ],
-  currentLabel: "Select your currency",
-  currency: "",
-};
+const type = [
+  { value: "2", label: "2 Wheel", id: 1 },
+  { value: "4", label: "4 Wheel", id: 2 },
+];
 
-const make = {
-  currencies: [
-    { country: "UK", value: "GBP", label: "Pound", id: 1 },
-    { country: "EU", value: "EUR", label: "Euro", id: 2 },
-    { country: "USA", value: "USD", label: "USD Dollar", id: 3 },
-  ],
-  currentLabel: "Select your currency",
-  currency: "",
-};
+const limit = [
+  { value: "5000", label: "\u20B9" + "5000", id: 1 },
+  { value: "10000", label: "\u20B9" + "10000", id: 2 },
+];
 
 const model = {
   currencies: [
@@ -47,38 +45,36 @@ const model = {
   currency: "",
 };
 
-const year = {
-  currencies: [
-    { country: "UK", value: "GBP", label: "Pound", id: 1 },
-    { country: "EU", value: "EUR", label: "Euro", id: 2 },
-    { country: "USA", value: "USD", label: "USD Dollar", id: 3 },
-  ],
-  currentLabel: "Select your currency",
-  currency: "",
-};
+const year = [
+  { value: "2000", label: "2000", id: 1 },
+  { value: "2001", label: "2001", id: 2 },
+  { value: "2002", label: "2002", id: 3 },
+];
 
 const validationSchema = Yup.object().shape({
-  //vehicleType: Yup.string().required().label("Vehicle Type"),
-  "policy.risk.make": Yup.string().required().label("Vehicle Make"),
-  // vehicleModel: Yup.string().required().label("Vehicle Model"),
-  // vehicleYear: Yup.string().required().label("Vehicle Year"),
-  // coverageLimit: Yup.string().required().label("Coverage Limit"),
-  // student: Yup.string().required().label("Student"),
-  // rider: Yup.string().required().label("Rider"),
+  dob: Yup.string().required(),
+  policy: Yup.object().shape({
+    partOfRiderClub: Yup.string().required().label("Student"),
+    areYouStudent: Yup.string().required().label("Rider"),
+    risk: Yup.object().shape({
+      limit: Yup.string().required().label("Coverage Limit"),
+      vehicleType: Yup.string().required().label("Vehicle Type"),
+      make: Yup.string().required().label("Vehicle Make"),
+      model: Yup.string().required().label("Vehicle Model"),
+      year: Yup.number().required().label("Vehicle Year"),
+      color: Yup.string().required().label("Vehicle Color"),
+      chacisNo: Yup.string().required().label("Chacis Number"),
+    }),
+  }),
 });
 
 function CreateQuote({ navigation }) {
-  const [vehicleType, setVehicleType] = useState("4");
-  // const [country, setCountry] = useState("uk");
-  // const [isEnabled, setIsEnabled] = useState(false);
-  const rupeeSymbol = "\u20B9";
   const quoteApi = useApi(policyApi.quotePreview);
-  const [error, setError] = useState();
 
   const handleSubmit = async (quoteDetails) => {
-    console.log("quoteDetails" + quoteDetails);
+    console.log(quoteDetails);
     const result = await quoteApi.request(quoteDetails);
-    console.log(result);
+    //console.log(result);
     if (!result.ok) {
       if (result.data) {
         setError(result.data);
@@ -97,14 +93,13 @@ function CreateQuote({ navigation }) {
         <ScrollView>
           <AppForm
             initialValues={{
-              vType: "",
-              vehicleType: "4",
+              dob: "",
               policy: {
-                limit: "5000",
-                areYouStudent: "false",
-                riderClub: "false",
+                areYouStudent: 0,
+                partOfRiderClub: 0,
                 risk: {
-                  //vehicleType: "4",
+                  limit: "",
+                  vehicleType: "",
                   make: "",
                   model: "",
                   year: "",
@@ -114,16 +109,15 @@ function CreateQuote({ navigation }) {
               },
             }}
             onSubmit={handleSubmit}
+            validationSchema={validationSchema}
           >
             <View>
               <AppText style={{ color: defaultStyles.colors.dark }}>
                 Vehicle Type
               </AppText>
-              <CustomPicker
-                placeholder="Type"
-                items={type}
-                name="vType"
-                controlName="vType"
+              <CustomSwitchSelector
+                options={type}
+                name="policy.risk.vehicleType"
               />
             </View>
             <View style={{ flexDirection: "column" }}>
@@ -148,12 +142,12 @@ function CreateQuote({ navigation }) {
               <AppText style={{ color: defaultStyles.colors.dark }}>
                 Vehicle Year
               </AppText>
-              <AppFormField
-                placeholder="Vehicle Year"
-                name="policy.risk.year"
+              <CustomPicker
+                placeholder="Year"
+                items={year}
+                name={"policy.risk.year"}
               />
             </View>
-
             <View style={{ flexDirection: "column" }}>
               <AppText style={{ color: defaultStyles.colors.dark }}>
                 Vehicle Color
@@ -163,7 +157,6 @@ function CreateQuote({ navigation }) {
                 name="policy.risk.color"
               />
             </View>
-
             <View style={{ flexDirection: "column" }}>
               <AppText style={{ color: defaultStyles.colors.dark }}>
                 Chacis Number
@@ -177,20 +170,42 @@ function CreateQuote({ navigation }) {
               <AppText style={{ color: defaultStyles.colors.dark }}>
                 Coverage Limit
               </AppText>
-              <CustomPicker placeholder="Type" items={type} />
+              <CustomSwitchSelector name="policy.risk.limit" options={limit} />
             </View>
+            <View
+              style={{
+                flexDirection: "column",
+              }}
+            >
+              <AppText style={{ color: defaultStyles.colors.dark }}>
+                Date of Birth
+              </AppText>
 
-            <View style={""}>
+              <CustomCalendarPicker name="dob" placeholder="dd/mm/yyyy" />
+            </View>
+            {/* <CustomDateTimePicker name="dob" placeholder="Date of Birth" /> */}
+            <View
+              style={{
+                marginVertical: 20,
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
               <AppText style={{ color: defaultStyles.colors.dark }}>
                 Are you a Student ?
               </AppText>
-              <CustomPicker placeholder="Type" items={type} />
+              <CustomSwitch name="policy.areYouStudent" />
             </View>
-            <View style={""}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
               <AppText style={{ color: defaultStyles.colors.dark }}>
-                Are you part of Rider Club ?
+                Are you part of rider club ?
               </AppText>
-              <CustomPicker placeholder="Type" items={type} />
+              <CustomSwitch name="policy.partOfRiderClub" />
             </View>
             <SubmitButton title="Check Premium" />
           </AppForm>

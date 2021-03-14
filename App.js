@@ -39,14 +39,9 @@ export default function App() {
           {user ? <AppNavigator /> : <AuthNavigator />}
         </NavigationContainer>
       </AuthContext.Provider>
-      {/* <Switch
-        value={isNew}
-        onValueChange={(newValue) => setIsNew(newValue)}
-      ></Switch> */}
     </>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
