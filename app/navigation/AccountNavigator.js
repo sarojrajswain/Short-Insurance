@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import MessagesScreen from "../screens/MessagesScreen";
 import AccountScreen from "../screens/AccountScreen";
 import AccountEditScreen from "../screens/AccountEditScreen";
+import IDCard from "../screens/IDCard";
 
 const Stack = createStackNavigator();
 const AccountNavigator = () => (
@@ -14,6 +15,7 @@ const AccountNavigator = () => (
       component={MessagesScreen}
       options={{ headerShown: false }}
     />
+    <Stack.Screen name="IDCard" component={IDCard} />
   </Stack.Navigator>
 );
 

@@ -9,21 +9,13 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { ScrollView } from "react-native-gesture-handler";
 import defaultStyles from "../config/styles";
 import * as Yup from "yup";
-//import { Switch } from "react-native-switch";
-import SwitchSelector from "react-native-switch-selector";
 import AppText from "../components/AppText";
 import policyApi from "../api/policy";
-import useAuth from "../auth/useAuth";
 import useApi from "../hooks/useApi";
-import { Formik } from "formik";
 import CustomPicker from "../components/CustomPicker";
 import CustomSwitch from "../components/CustomSwitch";
 import CustomSwitchSelector from "../components/CustomSwitchSelector";
-import policy from "../api/policy";
-import CustomDateTimePicker from "../components/CustomDateTimePicker";
-import NumberFormat from "react-number-format";
 import CustomCalendarPicker from "../components/CustomCalenderPicker";
-import AppFormPicker from "../components/forms/AppFormPicker";
 
 const type = [
   { value: "2", label: "2 Wheel", id: 1 },
@@ -34,16 +26,6 @@ const limit = [
   { value: "5000", label: "\u20B9" + "5000", id: 1 },
   { value: "10000", label: "\u20B9" + "10000", id: 2 },
 ];
-
-const model = {
-  currencies: [
-    { country: "UK", value: "GBP", label: "Pound", id: 1 },
-    { country: "EU", value: "EUR", label: "Euro", id: 2 },
-    { country: "USA", value: "USD", label: "USD Dollar", id: 3 },
-  ],
-  currentLabel: "Select your currency",
-  currency: "",
-};
 
 const year = [
   { value: "2000", label: "2000", id: 1 },

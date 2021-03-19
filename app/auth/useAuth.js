@@ -9,7 +9,6 @@ export default useAuth = () => {
 
   const logIn = (authToken) => {
     const user = jwtDecode(authToken);
-    //console.log("authUserToken: " + authToken);
     setUser(user);
     authStorage.storeToken(authToken);
   };
