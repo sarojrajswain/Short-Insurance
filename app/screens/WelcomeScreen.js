@@ -21,7 +21,7 @@ function WelcomeScreen({ navigation }) {
             color: colors.medium,
             textDecorationLine: "underline",
           }}
-          onPress={() => navigation.navigate("CreateQuote")}
+          onPress={() => navigation.navigate("QuickQuote")}
         />
       </View>
       <View style={styles.butonsContainer}>
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   logoContainer: {
-    top: 15,
+    top: "5%",
     position: "absolute",
     alignItems: "center",
   },

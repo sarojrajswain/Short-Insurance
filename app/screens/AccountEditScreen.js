@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Modal, Alert } from "react-native";
 import * as Yup from "yup";
 import SubmitButton from "../components/forms/SubmitButton";
 import Screen from "../components/Screen";
@@ -18,6 +18,7 @@ import useApi from "../hooks/useApi";
 import accountsApi from "../api/account";
 import ActivityIndicator from "../components/ActivityIndicator";
 import AppButton from "../components/AppButton";
+import { string } from "yup/lib/locale";
 
 export default function AccountEditScreen({ navigation }) {
   const [error, setError] = useState();
@@ -31,19 +32,26 @@ export default function AccountEditScreen({ navigation }) {
   }, []);
 
   const handleSubmit = async (accountDetails) => {
-    console.log(getAccountApi.data);
-    // console.log(accountDetails);
-    // const result = await saveAccountApi.request(accountDetails);
+//    console.log(getAccountApi.data);
+  //  console.log(accountDetails);
+    const result = await saveAccountApi.request(accountDetails);
 
-    // if (!result.ok) {
-    //   if (result.data) {
-    //     setError(result.data);
-    //   } else {
-    //     setError("An unexpected error occurred.");
-    //     console.log(result);
-    //   }
-    //   return;
-    // }
+    
+    if (!result.ok) {
+      if (result.data) {
+        setError(result.data);
+      } else {
+        setError("An unexpected error occurred.");
+        console.log(result);
+      }
+      return;
+    }
+    Alert.alert("Data updated sucessfully!", "Message",[
+      {
+        "text":"OK",
+        onPress:()=>navigation.navigate('Account')
+      }
+    ])
   };
 
   const phoneSchema = Yup.string().phone("IN").required().label("Phone Number");
@@ -89,7 +97,7 @@ export default function AccountEditScreen({ navigation }) {
                 email: "",
               }}
               onSubmit={handleSubmit}
-              //      validationSchema={validationSchema}
+              validationSchema={validationSchema}
             >
               <ErrorMessages error={error} visible={error} />
               <View>
@@ -182,10 +190,11 @@ export default function AccountEditScreen({ navigation }) {
                   Postal Code
                 </AppText> */}
                 <AppFormField
+                  keyboardType="numeric"
                   placeholder="Postal Code"
                   name="postalCode"
                   defaultValue={
-                    getAccountApi.data ? getAccountApi.data.city : ""
+                    getAccountApi.data ? getAccountApi.data.postalCode : ""
                   }
                 />
               </View>
@@ -206,10 +215,11 @@ export default function AccountEditScreen({ navigation }) {
                   Phone Number
                 </AppText> */}
                 <AppFormField
+                  keyboardType="numeric"
                   placeholder="Phone Number"
                   name="phoneNo"
                   defaultValue={
-                    getAccountApi.data ? getAccountApi.data.phoneNo : ""
+                    getAccountApi.data ? getAccountApi.data.phoneNo: ""
                   }
                 />
               </View>

@@ -37,7 +37,7 @@ export default function ListingScreen({ navigation }) {
             title={item.policyNumber}
             subTitle={item.vehicleDetail}
             imageSource={item.image}
-            onPress={() => navigation.navigate(routes.LISTING_DETAILS, item)}
+            onPress={() => navigation.navigate(routes.QUOTE_DETAILS, item)}
           />
         )}
       />

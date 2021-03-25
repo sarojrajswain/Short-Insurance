@@ -1,17 +1,17 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import ListingDetailScreen from "../components/ListingDetailScreen";
+import CreateQuote from "../screens/CreateQuote";
 import ListingEditScreen from "../screens/ListingEditScreen";
 import ListingScreen from "../screens/ListingScreen";
 
 const Stack = createStackNavigator();
 const FeedNavigator = () => (
-  <Stack.Navigator mode="modal" screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Listings" component={ListingScreen} />
+  <Stack.Navigator mode="modal" screenOptions={{ headerShown: true }}>
+    <Stack.Screen name="Policy" component={ListingScreen} />
     <Stack.Screen
-      name="ListingDetails"
-      component={ListingDetailScreen}
-      options={{ headerShown: false }}
+      name="CreateQuote"
+      component={CreateQuote}
+      options={{ headerShown: true }}
     />
   </Stack.Navigator>
 );

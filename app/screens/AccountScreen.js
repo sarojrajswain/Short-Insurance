@@ -5,7 +5,8 @@ import ListItem from "../components/ListItem";
 import Screen from "../components/Screen";
 import colors from "../config/colors";
 import useAuth from "../auth/useAuth";
-import GenerateID from "./IDCard";
+import GenerateID from "../components/IDCard";
+
 const manyItems = [
   {
     title: "My Messages",
@@ -18,7 +19,7 @@ const manyItems = [
 ];
 export default function AccountScreen({ navigation }) {
   const { user, logOut } = useAuth();
-  const { execute } = GenerateID();
+  const { generateIDCard } = GenerateID();
   return (
     <Screen style={styles.screen}>
       <View style={styles.container}>
@@ -51,7 +52,12 @@ export default function AccountScreen({ navigation }) {
       <ListItem
         title="Generate ID Card"
         IconComponent={<Icon name="id-card" backgroundColor="#ffe66d" />}
-        onPress={() => execute()}
+        onPress={() => generateIDCard()}
+      ></ListItem>
+      <ListItem
+        title="Change Password"
+        IconComponent={<Icon name="lock-open" backgroundColor="orange" />}
+        onPress={() => navigation.navigate("ChangePassword")}
       ></ListItem>
       <ListItem
         title="Log Out"

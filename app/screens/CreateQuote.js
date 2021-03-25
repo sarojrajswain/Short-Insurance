@@ -3,9 +3,8 @@ import React, { useState } from "react";
 import { View, StyleSheet, KeyboardAvoidingView, Switch } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Screen from "../components/Screen";
-import { AppFormField, SubmitButton } from "../components/forms";
+import {ErrorMessages, AppFormField, SubmitButton } from "../components/forms";
 import AppForm from "../components/forms/AppForm";
-import DropDownPicker from "react-native-dropdown-picker";
 import { ScrollView } from "react-native-gesture-handler";
 import defaultStyles from "../config/styles";
 import * as Yup from "yup";
@@ -16,6 +15,7 @@ import CustomPicker from "../components/CustomPicker";
 import CustomSwitch from "../components/CustomSwitch";
 import CustomSwitchSelector from "../components/CustomSwitchSelector";
 import CustomCalendarPicker from "../components/CustomCalenderPicker";
+import AppImagePicker from "../components/forms/AppImagePicker";
 
 const type = [
   { value: "2", label: "2 Wheel", id: 1 },
@@ -34,7 +34,6 @@ const year = [
 ];
 
 const validationSchema = Yup.object().shape({
-  dob: Yup.string().required(),
   policy: Yup.object().shape({
     partOfRiderClub: Yup.string().required().label("Student"),
     areYouStudent: Yup.string().required().label("Rider"),
@@ -52,6 +51,7 @@ const validationSchema = Yup.object().shape({
 
 function CreateQuote({ navigation }) {
   const quoteApi = useApi(policyApi.quotePreview);
+  const [error, setError] = useState();
 
   const handleSubmit = async (quoteDetails) => {
     console.log(quoteDetails);
@@ -75,7 +75,6 @@ function CreateQuote({ navigation }) {
         <ScrollView>
           <AppForm
             initialValues={{
-              dob: "",
               policy: {
                 areYouStudent: 0,
                 partOfRiderClub: 0,
@@ -87,12 +86,16 @@ function CreateQuote({ navigation }) {
                   year: "",
                   color: "",
                   chacisNo: "",
+                  image:[]
                 },
               },
             }}
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
           >
+            <ErrorMessages error={error} visible={error} />
+            <AppImagePicker name="policy.risk.image" />
+          
             <View>
               <AppText style={{ color: defaultStyles.colors.dark }}>
                 Vehicle Type
@@ -154,17 +157,17 @@ function CreateQuote({ navigation }) {
               </AppText>
               <CustomSwitchSelector name="policy.risk.limit" options={limit} />
             </View>
-            <View
+            {/* <View
               style={{
                 flexDirection: "column",
               }}
             >
               <AppText style={{ color: defaultStyles.colors.dark }}>
                 Date of Birth
-              </AppText>
+              </AppText> */}
 
-              <CustomCalendarPicker name="dob" placeholder="dd/mm/yyyy" />
-            </View>
+              {/* <CustomCalendarPicker name="dob" placeholder="dd/mm/yyyy" /> */}
+            {/* </View> */}
             {/* <CustomDateTimePicker name="dob" placeholder="Date of Birth" /> */}
             <View
               style={{
@@ -189,7 +192,7 @@ function CreateQuote({ navigation }) {
               </AppText>
               <CustomSwitch name="policy.partOfRiderClub" />
             </View>
-            <SubmitButton title="Check Premium" />
+            <SubmitButton title="Save" />
           </AppForm>
         </ScrollView>
       </KeyboardAwareScrollView>

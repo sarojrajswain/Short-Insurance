@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Image } from "react-native";
+import { StyleSheet, Image, Alert } from "react-native";
 import * as yup from "yup";
 
 import Screen from "../components/Screen";
@@ -7,30 +7,33 @@ import { ErrorMessages, AppFormField, SubmitButton } from "../components/forms";
 import AppForm from "../components/forms/AppForm";
 import authApi from "../api/auth";
 import useAuth from "../auth/useAuth";
-import Buttons from "../components/AppButton";
-import colors from "../config/colors";
 
 const ValidationSchema = yup.object().shape({
   email: yup.string().required().email(),
-  password: yup.string().required().min(4),
+  newPassword: yup.string().required().min(4),
+  confirmPassword:yup.string()
+  .required()
+  .oneOf([yup.ref("newPassword"), null])
+  .label("Confirm Password"),
 });
 
-export default function LoginScreen({ navigation }) {
+export default function ForgetPasswordScreen({navigation}) {
   const auth = useAuth();
   const [loginFailed, setLoginFailed] = useState(false);
 
   const handleSubmit = async ({ email, password }) => {
-    const result = await authApi.login(email, password);
-    console.log(result);
-    if (!result.ok) return setLoginFailed(true);
-    setLoginFailed(false);
-    auth.logIn(result.data);
+    Alert.alert("Password Udpated Sucessfully","Password Update",[
+      {
+        text:"OK",
+        onPress:()=> navigation.navigate("LoginScreen")
+      }
+    ])
   };
   return (
     <Screen style={styles.container}>
       <Image source={require("../assets/logo-red.png")} style={styles.logo} />
       <AppForm
-        initialValues={{ email: "", password: "" }}
+        initialValues={{ email: "", newPassword: "", confirmPassword:"" }}
         onSubmit={handleSubmit}
         validationSchema={ValidationSchema}
       >
@@ -50,22 +53,20 @@ export default function LoginScreen({ navigation }) {
           autoCapitalize="none"
           autoCorrect={false}
           icon="lock"
-          name="password"
-          placeholder="Password"
+          name="newPassword"
+          placeholder="New Password"
           secureTextEntry
           textContentType="password"
         />
-        <SubmitButton title="Login" />
-        <Buttons
-          title="Forget Password"
-          color=""
-          style={{
-            fontSize: 15,
-            color: colors.medium,
-            textDecorationLine: "underline",
-          }}
-          onPress={() => navigation.navigate("ForgetPassword")}
+        <AppFormField
+          autoCapitalize="none"
+          autoCorrect={false}
+          icon="lock"
+          name="confirmPassword"
+          placeholder="Confirm Password"
+          textContentType="password"
         />
+        <SubmitButton title="Update Password" />
       </AppForm>
     </Screen>
   );

@@ -9,6 +9,7 @@ import { useFormikContext } from "formik";
 import ErrorMessages from "../components/forms/ErrorMessages";
 import NumberFormat from "react-number-format";
 import _ from "lodash";
+import colors from "../config/colors";
 
 export default function CustomPicker({
   icon,
@@ -88,7 +89,6 @@ export default function CustomPicker({
               selectedValue={selectedValue}
               onSelectItem={(item) => setFieldValue(name, item)}
               onValueChange={(itemValue) => {
-                console.log(itemValue);
                 setFieldValue(name, itemValue);
                 setSelectedValue(itemValue);
               }}
@@ -96,7 +96,7 @@ export default function CustomPicker({
                 setModalVisible(false);
               }}
             >
-              <Picker.Item label="Select currency" value="" />
+              <Picker.Item label={placeholder} value="" />
               {items.map((v) => {
                 return (
                   <Picker.Item label={v.label} value={v.value} key={v.value} />
@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
   },
   text: {
     flex: 1,
+    color:colors.medium,
   },
   icon: {
     marginRight: 10,
@@ -140,19 +141,20 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     position: "absolute",
-    backgroundColor: "red",
+    backgroundColor: colors.light,
     width: "100%",
-    top: 450,
+    bottom: 0,
     //flex: 1,
     //justifyContent: "flex-end",
     //alignItems: "flex-end",
   },
   pickerContainer: {
-    height: 50,
+    height: 40,
     width: "100%",
     justifyContent: "flex-end",
   },
   pickerButtons: {
+    backgroundColor:  colors.white,
     justifyContent: "space-between",
     flexDirection: "row",
     //alignItems: "center",

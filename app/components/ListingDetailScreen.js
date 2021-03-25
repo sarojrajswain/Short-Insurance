@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, SafeAreaView } from "react-native";
 import colors from "../config/colors";
 import AppText from "./AppText";
 import ListItem from "./ListItem";
@@ -7,6 +7,7 @@ import ListItem from "./ListItem";
 export default function ListingDetailScreen({ route }) {
   const listing = route.params;
   return (
+    <SafeAreaView>
     <View>
       <Image style={styles.image} source={listing.image} />
       <View style={styles.detailContainer}>
@@ -21,6 +22,7 @@ export default function ListingDetailScreen({ route }) {
         </View>
       </View>
     </View>
+    </SafeAreaView>
   );
 }
 

@@ -49,7 +49,11 @@ export default function AppPicker({
           />
         </View>
       </TouchableWithoutFeedback>
-      <Modal visible={modalVisible} animationType="slide">
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        animationType={"fade"}
+      >
         <Screen>
           <Button onPress={() => setModalVisible(false)} title="close" />
           <FlatList

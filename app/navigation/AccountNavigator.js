@@ -4,6 +4,7 @@ import MessagesScreen from "../screens/MessagesScreen";
 import AccountScreen from "../screens/AccountScreen";
 import AccountEditScreen from "../screens/AccountEditScreen";
 import IDCard from "../screens/IDCard";
+import ChangePasswordScreen from "../screens/ChangePasswordScreen";
 
 const Stack = createStackNavigator();
 const AccountNavigator = () => (
@@ -16,6 +17,7 @@ const AccountNavigator = () => (
       options={{ headerShown: false }}
     />
     <Stack.Screen name="IDCard" component={IDCard} />
+    <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
   </Stack.Navigator>
 );
 
