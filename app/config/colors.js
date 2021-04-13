@@ -9,4 +9,6 @@ export default {
   medium: "#6e6969",
   tomato: "tomato",
   green: "#306530",
+  blue: "#0057b8",
+  grey: "#4a4a49",
 };

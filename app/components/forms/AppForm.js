@@ -9,6 +9,7 @@ export default function AppForm({
 }) {
   return (
     <Formik
+      enableReinitialize
       initialValues={initialValues}
       onSubmit={onSubmit}
       validationSchema={validationSchema}

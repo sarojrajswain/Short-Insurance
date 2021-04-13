@@ -51,17 +51,17 @@ export default function AccountScreen({ navigation }) {
       </View>
       <ListItem
         title="Generate ID Card"
-        IconComponent={<Icon name="id-card" backgroundColor="#ffe66d" />}
+        IconComponent={<Icon name="id-card" backgroundColor={colors.blue} />}
         onPress={() => generateIDCard()}
       ></ListItem>
       <ListItem
         title="Change Password"
-        IconComponent={<Icon name="lock-open" backgroundColor="orange" />}
+        IconComponent={<Icon name="lock-open" backgroundColor={colors.blue} />}
         onPress={() => navigation.navigate("ChangePassword")}
       ></ListItem>
       <ListItem
         title="Log Out"
-        IconComponent={<Icon name="logout" backgroundColor="orange" />}
+        IconComponent={<Icon name="logout" backgroundColor={colors.blue} />}
         onPress={() => logOut()}
       ></ListItem>
     </Screen>

@@ -1,9 +1,29 @@
 import React from "react";
-import { View, Text, StyleSheet, TextInput, Platform } from "react-native";
+import { View, StyleSheet, TextInput } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import defaultStyles from "../config/styles";
 
-export default function AppTextInput({ icon, width = "100%", ...otherProps }) {
+function AppTextInput(
+  {
+    value,
+    icon,
+    width = "100%",
+    name,
+    placeholder,
+    style,
+    onSubmitEditing,
+    returnKeyType,
+    onChangeText,
+    onBlur,
+    defaultValue,
+    autoCapitalize,
+    autoCorrect,
+    secureTextEntry,
+    textContentType,
+    keyboardType,
+  },
+  ref
+) {
   return (
     <View style={[styles.container, { width }]}>
       <MaterialCommunityIcons
@@ -13,13 +33,32 @@ export default function AppTextInput({ icon, width = "100%", ...otherProps }) {
         style={styles.icon}
       />
       <TextInput
-        placeholderTextColor={defaultStyles.colors.medium}
+        value={value}
+        onChangeText={onChangeText}
+        onBlur={onBlur}
+        width={width}
+        ref={ref}
+        name={name}
+        autoCapitalize={autoCapitalize}
+        autoCorrect={autoCorrect}
+        secureTextEntry={secureTextEntry}
+        textContentType={textContentType}
+        keyboardType={keyboardType}
+        placeholder={placeholder}
         style={defaultStyles.textInput}
-        {...otherProps}
+        onSubmitEditing={onSubmitEditing}
+        returnKeyType={returnKeyType}
+        defaultValue={defaultValue}
+        ref={ref}
       />
     </View>
   );
 }
+
+const forwaredInput = React.forwardRef(AppTextInput);
+
+export default forwaredInput;
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: defaultStyles.colors.white,
@@ -31,7 +70,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: "solid",
   },
-
+  textInput: {
+    color: "grey",
+    fontSize: 18,
+    flex: 1,
+  },
   icon: {
     marginRight: 10,
   },

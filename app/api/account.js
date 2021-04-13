@@ -8,4 +8,8 @@ const saveAccount = (accountInfo) => {
   return client.post("/accounts", accountInfo);
 };
 
-export default { getAccount, saveAccount };
+const updateAccount = (id, accountInfo) => {
+  return client.put("/accounts/" + id, accountInfo);
+};
+
+export default { getAccount, saveAccount, updateAccount };

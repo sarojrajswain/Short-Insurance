@@ -23,7 +23,9 @@ import CustomPicker from "../components/CustomPicker";
 import CustomSwitch from "../components/CustomSwitch";
 import CustomSwitchSelector from "../components/CustomSwitchSelector";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import AppFormPicker from '../components/forms/AppFormPicker';
 import CustomCalendarPicker from "../components/CustomCalenderPicker";
+import CategoryPickerItem from "../components/CatagoryPickerItem";
 import { ceil } from "lodash";
 import colors from "../config/colors";
 
@@ -61,12 +63,100 @@ const year = [
   { value: "2020", label: "2020", id: 21 },
   { value: "2021", label: "2020", id: 22 },
 ];
+const categories = [
+  {
+    backgroundColor: "#fc5c65",
+    icon: "floor-lamp",
+    label: "Furniture",
+    value: 1,
+    DD2:[
+      {
+        backgroundColor: "#4b7bec",
+        icon: "headphones",
+        label: "Movies & Music",
+        value: 7,
+      }
+    ]
+  },
+  {
+    backgroundColor: "#fd9644",
+    icon: "car",
+    label: "Cars",
+    value: 2,
+    DD2:[
+      "india","usa","uk","canada"
+    ]
+  },
+  {
+    backgroundColor: "#fed330",
+    icon: "camera",
+    label: "Cameras",
+    value: 3,
+    DD2:[
+      "square","trianlge","circle","round"
+    ]
+  },
+  {
+    backgroundColor: "#26de81",
+    icon: "cards",
+    label: "Games",
+    value: 4,
+    DD2:[
+      "linon","tiger","elephant","zibra"
+    ]
+  },
+  {
+    backgroundColor: "#2bcbba",
+    icon: "shoe-heel",
+    label: "Clothing",
+    value: 5,
+    DD2:[
+      "summer","winter","spring","rainy"
+    ]
+  },
+  {
+    backgroundColor: "#45aaf2",
+    icon: "basketball",
+    label: "Sports",
+    value: 6,
+    DD2:[
+      "red","green","blue","yellow"
+    ]
+  },
+  {
+    backgroundColor: "#4b7bec",
+    icon: "headphones",
+    label: "Movies & Music",
+    value: 7,
+    DD2:[
+      "red","green","blue","yellow"
+    ]
+  },
+  {
+    backgroundColor: "#a55eea",
+    icon: "book-open-variant",
+    label: "Books",
+    value: 8,
+    DD2:[
+      "red","green","blue","yellow"
+    ]
+  },
+  {
+    backgroundColor: "#778ca3",
+    icon: "application",
+    label: "Other",
+    value: 9,
+    DD2:[
+      "red","green","blue","yellow"
+    ]
+  },
+];
 
 const validationSchema = Yup.object().shape({
   policy: Yup.object().shape({
     limit: Yup.string().required().label("Coverage Limit"),
-    areYouPartOfRiderClub: Yup.string().required().label("Student"),
-    areYouStudent: Yup.string().required().label("Rider"),
+    areYouPartOfRiderClub: Yup.boolean().label("Student"),
+    areYouStudent: Yup.boolean().label("Rider"),
     risk: Yup.object().shape({
       vehicleType: Yup.string().required().label("Vehicle Type"),
       make: Yup.string().required().label("Vehicle Make"),
@@ -83,34 +173,35 @@ function QuickQuote({ navigation }) {
 
   const handleSubmit = async (quoteDetails) => {
     console.log(quoteDetails);
-    const result = await quoteApi.request(quoteDetails);
-    //console.log(result);
-    if (!result.ok) {
-      if (result.data) {
-        setError(result.data);
-      } else {
-        setError("An unexpected error occurred.");
-        console.log(result);
-      }
-      return;
-    }
-    setIsModalVisible(true);
+    // const result = await quoteApi.request(quoteDetails);
+    
+    // if (!result.ok) {
+    //   if (result.data) {
+    //     setError(result.data);
+    //   } else {
+    //     setError("An unexpected error occurred.");
+    //     console.log(result);
+    //   }
+    //   return;
+    // }
+    // setIsModalVisible(true);
     //navigation.navigate("Login");
   };
 
   return (
     <>
       <Screen style={styles.container}>
-        <KeyboardAwareScrollView>
+        <KeyboardAvoidingView behavior={"padding"}>
           <ScrollView>
             <AppForm
               initialValues={{
                 policy: {
-                  limit: "",
-                  areYouStudent: 0,
-                  areYouPartOfRiderClub: 0,
+                  catagory: categories[0].value,
+                  limit: "5000",
+                  areYouStudent: false,
+                  areYouPartOfRiderClub: false,
                   risk: {
-                    vehicleType: "",
+                    vehicleType: "2W",
                     make: "",
                     model: "",
                     year: "",
@@ -162,6 +253,20 @@ function QuickQuote({ navigation }) {
                   name={"policy.risk.year"}
                 />
               </View>
+              <View style={{ flexDirection: "column" }}>
+                <AppText style={{ color: defaultStyles.colors.dark }}>
+                  Vehicle Year
+                </AppText>
+                <AppFormPicker
+                  items={categories}
+                  name="policy.catagory"
+                  numberOfColumns={3}
+                  PickerItemComponent={CategoryPickerItem}
+                  placeholder="Category"
+                  width="100%"
+                />
+              </View>
+              
               <View style={{ flexDirection: "column" }}>
                 <AppText style={{ color: defaultStyles.colors.dark }}>
                   Coverage Limit
@@ -243,7 +348,7 @@ function QuickQuote({ navigation }) {
               </Modal>
             </AppForm>
           </ScrollView>
-        </KeyboardAwareScrollView>
+        </KeyboardAvoidingView>
       </Screen>
     </>
   );

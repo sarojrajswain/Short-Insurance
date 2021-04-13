@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import { Switch, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFormikContext } from "formik";
 import ErrorMessages from "./forms/ErrorMessages";
 import defaultStyles from "../config/styles";
-import CalendarPicker from "react-native-calendar-picker";
+import DatePicker from "react-native-datepicker";
 import AppText from "./AppText";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 import _ from "lodash";
 
-export default function CustomCalendarPicker({
+export default function CustomDatePicker({
   name,
   icon,
   placeholder,
@@ -20,29 +20,14 @@ export default function CustomCalendarPicker({
   const [isCalendarPickerVisible, setIsCalendarPickerVisible] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
-  const [selectedDate  =  defaultValue, setSelectedDate] = useState();
+  const [selectedDate, setSelectedDate] = useState("2016-05-15");
 
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
 
-  const onDateChange = (date, type) => {
-    //function to handle the date change
-    if (type === "END_DATE") {
-      setSelectedEndDate(date.toDate().toLocaleDateString());
-    } else {
-      setSelectedEndDate(null);
-      setSelectedStartDate(date.toDate().toLocaleDateString());
-    }
-    //console.log(selectedStartDate ? selectedStartDate.toString() : "");
-    const selectedDate =
-      date._d.getDate() +
-      "/" +
-      date._d.getMonth() +
-      "/" +
-      date._d.getFullYear();
-    console.log(date.toDate().toLocaleDateString());
-    setSelectedDate(date.toDate().toLocaleDateString());
-    setFieldValue(name, date.toDate().toLocaleDateString());
+  const onDateChange = (date) => {
+    setSelectedDate(date);
+    setFieldValue(name, date);
     setIsCalendarPickerVisible(false);
   };
 
@@ -55,7 +40,7 @@ export default function CustomCalendarPicker({
   };
 
   const handleConfirm = (date) => {
-    setSelectedDate(date.toDate().toLocaleDateString());
+    setSelectedDate(date.toLocaleDateString());
     hideDatePicker();
   };
   return (
@@ -78,7 +63,7 @@ export default function CustomCalendarPicker({
             </AppText>
           ) : (
             <AppText style={styles.placeholder} name={name}>
-              {defaultValue}
+              {defaultValue ? defaultValue : placeholder}
             </AppText>
           )}
           <MaterialCommunityIcons
@@ -90,37 +75,19 @@ export default function CustomCalendarPicker({
       </TouchableWithoutFeedback>
       {isCalendarPickerVisible ? (
         <View>
-          <CalendarPicker
+          <DatePicker
             name={name}
-            isVisible={isDatePickerVisible}
+            visible={isDatePickerVisible}
+            style={{ width: 20 }}
+            mode="date"
+            date={selectedDate}
+            placeholder="select date"
+            format="YYYY-MM-DD"
+            minDate="2016-05-01"
+            confirmBtnText="Confirm"
+            cancelBtnText="Cancel"
             onDateChange={onDateChange}
-            previousTitle="Previous"
-            nextTitle="Next"
-            selectedStartDate={selectedDate ? selectedDate : defaultValue}
-            initialDate={defaultValue}
-            todayBackgroundColor="#e6ffe6"
-            selectedDayColor="#66ff33"
-            selectedDayTextColor="#000000"
-            weekdays={["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"]}
-            months={[
-              "January",
-              "Febraury",
-              "March",
-              "April",
-              "May",
-              "June",
-              "July",
-              "August",
-              "September",
-              "October",
-              "November",
-              "December",
-            ]}
-            scaleFactor={375}
-            textStyle={{
-              fontFamily: "Cochin",
-              color: "#000000",
-            }}
+            hideText="true"
           />
           <ErrorMessages
             error={_.get(errors, name)}

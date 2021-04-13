@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Modal, Alert } from "react-native";
+import { View, StyleSheet, Modal, Alert, KeyboardAvoidingView } from "react-native";
 import * as Yup from "yup";
 import SubmitButton from "../components/forms/SubmitButton";
 import Screen from "../components/Screen";
@@ -7,7 +7,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { ScrollView } from "react-native-gesture-handler";
 import AppForm from "../components/forms/AppForm";
 import AppText from "../components/AppText";
-import defaultStyles from "../config/styles";
 import { AppFormField, ErrorMessages } from "../components/forms";
 import "yup-phone";
 import CustomSwitchSelector from "../components/CustomSwitchSelector";
@@ -18,7 +17,7 @@ import useApi from "../hooks/useApi";
 import accountsApi from "../api/account";
 import ActivityIndicator from "../components/ActivityIndicator";
 import AppButton from "../components/AppButton";
-import { string } from "yup/lib/locale";
+import CustomDatePicker from '../components/CustomDatePicker';
 
 export default function AccountEditScreen({ navigation }) {
   const [error, setError] = useState();
@@ -26,27 +25,31 @@ export default function AccountEditScreen({ navigation }) {
 
   const getAccountApi = useApi(accountsApi.getAccount);
   const saveAccountApi = useApi(accountsApi.saveAccount);
+  const updateAccountApi = useApi(accountsApi.updateAccount);
 
   useEffect(() => {
     getAccountApi.request(user.email);
   }, []);
 
   const handleSubmit = async (accountDetails) => {
-//    console.log(getAccountApi.data);
-  //  console.log(accountDetails);
-    const result = await saveAccountApi.request(accountDetails);
 
+    console.log(accountDetails);
+    
+    let result=null;
+
+    console.log(getAccountApi.data);
+    result = getAccountApi.data ? await updateAccountApi.request(getAccountApi.data._id, accountDetails) : await saveAccountApi.request(accountDetails);
     
     if (!result.ok) {
       if (result.data) {
-        setError(result.data);
+        setError(result.data.firstName);
       } else {
         setError("An unexpected error occurred.");
         console.log(result);
       }
       return;
     }
-    Alert.alert("Data updated sucessfully!", "Message",[
+    Alert.alert("Account info updated sucessfully!", "Message",[
       {
         "text":"OK",
         onPress:()=>navigation.navigate('Account')
@@ -80,24 +83,24 @@ export default function AccountEditScreen({ navigation }) {
         </>
       )}
       <Screen style={styles.container}>
-        <KeyboardAwareScrollView>
+        <KeyboardAvoidingView  behavior="padding">
           <ScrollView>
             <AppForm
               initialValues={{
-                firstName: "",
-                lastName: "",
-                dateOfBirth: "",
-                gender: "",
-                address: "",
-                city: "",
-                state: "",
-                postalCode: "",
-                driverLicense: "",
-                phoneNo: "",
-                email: "",
+                firstName: getAccountApi.data ? getAccountApi.data.firstName : "",
+                lastName: getAccountApi.data ? getAccountApi.data.lastName : "",
+                dateOfBirth: getAccountApi.data ? getAccountApi.data.dateOfBirth : "",
+                gender: getAccountApi.data ? getAccountApi.data.gender : "",
+                address: getAccountApi.data ? getAccountApi.data.address : "",
+                city: getAccountApi.data ? getAccountApi.data.city : "",
+                state: getAccountApi.data ? getAccountApi.data.state : "",
+                postalCode: getAccountApi.data ? getAccountApi.data.postalCode : "",
+                driverLicense: getAccountApi.data ? getAccountApi.data.driverLicense : "",
+                phoneNo: getAccountApi.data ? getAccountApi.data.phoneNo : "",
+                email: getAccountApi.data ? getAccountApi.data.email : "",
               }}
               onSubmit={handleSubmit}
-              validationSchema={validationSchema}
+              //validationSchema={validationSchema}
             >
               <ErrorMessages error={error} visible={error} />
               <View>
@@ -132,7 +135,7 @@ export default function AccountEditScreen({ navigation }) {
                   placeholder="Date of Birth (DD/MM/YYYY)"
                   name="dateOfBirth"
                   defaultValue={
-                    getAccountApi.data ? getAccountApi.data.dateOfBirth : ""
+                    getAccountApi.data ? getAccountApi.data.dateOfBirth : "01/01/2020"
                   }
                 />
               </View>
@@ -147,6 +150,9 @@ export default function AccountEditScreen({ navigation }) {
                     { label: "Male", value: "M" },
                     { label: "Female", value: "F" },
                   ]}
+                  defaultValue={()=> console.log('hi'),
+                    getAccountApi.data ? getAccountApi.data.gender : "M"
+                  }
                 />
               </View>
               <View>
@@ -194,7 +200,7 @@ export default function AccountEditScreen({ navigation }) {
                   placeholder="Postal Code"
                   name="postalCode"
                   defaultValue={
-                    getAccountApi.data ? getAccountApi.data.postalCode : ""
+                    getAccountApi.data ? String(getAccountApi.data.postalCode) : ""
                   }
                 />
               </View>
@@ -219,7 +225,7 @@ export default function AccountEditScreen({ navigation }) {
                   placeholder="Phone Number"
                   name="phoneNo"
                   defaultValue={
-                    getAccountApi.data ? getAccountApi.data.phoneNo: ""
+                    getAccountApi.data ? String(getAccountApi.data.phoneNo) : ""
                   }
                 />
               </View>
@@ -236,7 +242,7 @@ export default function AccountEditScreen({ navigation }) {
               <SubmitButton title="Save" />
             </AppForm>
           </ScrollView>
-        </KeyboardAwareScrollView>
+        </KeyboardAvoidingView>
       </Screen>
     </>
   );

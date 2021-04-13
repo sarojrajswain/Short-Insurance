@@ -18,7 +18,7 @@ function WelcomeScreen({ navigation }) {
           color=""
           style={{
             fontSize: 15,
-            color: colors.medium,
+            color: colors.grey,
             textDecorationLine: "underline",
           }}
           onPress={() => navigation.navigate("QuickQuote")}

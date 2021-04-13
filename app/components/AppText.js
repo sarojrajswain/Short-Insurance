@@ -11,7 +11,7 @@ function AppText({ children, style, ...otherProps }) {
 
 const styles = StyleSheet.create({
   text: {
-    color: "tomato",
+    color: "grey",
     ...Platform.select({
       ios: {
         fontSize: 20,

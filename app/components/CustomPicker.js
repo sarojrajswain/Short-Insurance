@@ -8,7 +8,7 @@ import { Picker } from "@react-native-community/picker";
 import { useFormikContext } from "formik";
 import ErrorMessages from "../components/forms/ErrorMessages";
 import NumberFormat from "react-number-format";
-import _ from "lodash";
+import _, { pick } from "lodash";
 import colors from "../config/colors";
 
 export default function CustomPicker({
@@ -17,16 +17,18 @@ export default function CustomPicker({
   placeholder,
   name,
   width = "100%",
+  defaultValue,
 }) {
   const { errors, setFieldValue, touched } = useFormikContext();
-  const [pickerValue, setPickerValue] = useState(placeholder);
+  const [pickerValue, setPickerValue] = useState(defaultValue);
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(placeholder);
+  const [selectedValue=defaultValue, setSelectedValue] = useState(defaultValue);
 
   return (
     <React.Fragment>
       <TouchableWithoutFeedback
         onPress={() => {
+          console.log(pickerValue);
           setModalVisible(true);
         }}
       >
@@ -53,7 +55,7 @@ export default function CustomPicker({
             </AppText>
           ) : (
             <AppText style={styles.placeholder} name={name}>
-              {placeholder}
+              {defaultValue ? defaultValue : placeholder}
             </AppText>
           )}
           <MaterialCommunityIcons
@@ -86,7 +88,7 @@ export default function CustomPicker({
             <Picker
               name={name}
               style={{ width: "100%" }}
-              selectedValue={selectedValue}
+              selectedValue={selectedValue   ?   selectedValue   :   defaultValue}
               onSelectItem={(item) => setFieldValue(name, item)}
               onValueChange={(itemValue) => {
                 setFieldValue(name, itemValue);

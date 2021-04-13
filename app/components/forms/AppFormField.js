@@ -1,31 +1,54 @@
 import React from "react";
-import { View, Text } from "react-native";
 import { useFormikContext } from "formik";
-import AppTextInput from "../AppTextInput";
+import AppTextInput from "../../components/AppTextInput";
 import ErrorMessages from "./ErrorMessages";
 import _ from "lodash";
 
-export default function AppFormField({ name, width, ...otherProps }) {
-  const {
-    setFieldTouched,
+function AppFormField(
+  {
+    name,
+    icon,
+     width,
+     placeholder,
+     onSubmitEditing,
+     returnKeyType,
+     defaultValue,
+     autoCapitalize,
+     autoCorrect,
+     secureTextEntry,
+     textContentType,
+     keyboardType,
+  },
+  ref
+) {
+  const { setFieldTouched,
     touched,
     errors,
     handleChange,
-    values,
-  } = useFormikContext();
+    values,} = useFormikContext();
 
   return (
     <>
       <AppTextInput
+        name={name}
         onChangeText={handleChange(name)}
         onBlur={() => {
           setFieldTouched(name);
         }}
         width={width}
-        {...otherProps}
-        // keyboardType="email-address"
-        // textContentType="emailAddress"
-        // icon="email"
+        icon={icon}
+        ref={ref}
+        autoCapitalize={autoCapitalize}
+        autoCorrect={autoCorrect}
+        secureTextEntry={secureTextEntry}
+        textContentType={textContentType}
+        keyboardType={keyboardType}
+        name={name}
+        placeholder={placeholder}
+        onSubmitEditing={onSubmitEditing}
+        returnKeyType={returnKeyType}
+        defaultValue={defaultValue}
+        ref={ref}
       />
       <ErrorMessages
         error={_.get(errors, name)}
@@ -34,3 +57,7 @@ export default function AppFormField({ name, width, ...otherProps }) {
     </>
   );
 }
+
+const forwardAppFormField = React.forwardRef(AppFormField);
+
+export default forwardAppFormField;

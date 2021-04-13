@@ -15,6 +15,7 @@ import AppText from "./AppText";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import Screen from "./Screen";
 import PickerItem from "./PickerItem";
+import AppTextInput from './AppTextInput';
 
 export default function AppPicker({
   icon,
@@ -24,12 +25,40 @@ export default function AppPicker({
   PickerItemComponent = PickerItem,
   selectedItem,
   onSelectItem,
+  selectedLabel,
   width = "100%",
 }) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [search, setSearch] = useState('');
+  const [filteredDataSource, setFilteredDataSource] = useState([]);
+
+  const searchFilterFunction = (text) => {
+    // Check if searched text is not blank
+    if (text) {
+      // Inserted text is not blank
+      // Filter the masterDataSource and update FilteredDataSource
+      const newData = items.filter(function (item) {
+        // Applying filter for the inserted text in search bar
+        const itemData = item.label ? item.label.toUpperCase() : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      setFilteredDataSource(newData);
+      setSearch(text);
+    } else {
+      // Inserted text is blank
+      // Update FilteredDataSource with masterDataSource
+      setFilteredDataSource(items);
+      setSearch(text);
+    }
+  };
+  
   return (
     <React.Fragment>
-      <TouchableWithoutFeedback onPress={() => setModalVisible(true)}>
+      <TouchableWithoutFeedback onPress={() => {
+          setFilteredDataSource(items);
+          setModalVisible(true)}
+        }>
         <View style={[styles.container, { width }]}>
           <MaterialCommunityIcons
             name={icon}
@@ -37,8 +66,8 @@ export default function AppPicker({
             color={defaultStyles.colors.medium}
             style={styles.icon}
           />
-          {selectedItem ? (
-            <AppText style={styles.text}>{selectedItem}</AppText>
+          {selectedLabel ? (
+            <AppText style={styles.text}>{selectedLabel}</AppText>
           ) : (
             <AppText style={styles.placeholder}>{placeholder}</AppText>
           )}
@@ -56,9 +85,15 @@ export default function AppPicker({
       >
         <Screen>
           <Button onPress={() => setModalVisible(false)} title="close" />
+          <AppTextInput
+                onChangeText={(text) => searchFilterFunction(text)}
+                value={search}
+                underlineColorAndroid="transparent"
+                placeholder="Search Here"
+              />
           <FlatList
             numColumns={numberOfColumns}
-            data={items}
+            data={filteredDataSource}
             keyExtractor={(item) => item.value.toString()}
             renderItem={({ item }) => (
               <PickerItemComponent
@@ -66,6 +101,8 @@ export default function AppPicker({
                 onPress={() => {
                   setModalVisible(false);
                   onSelectItem(item);
+                  setSearch("");
+                  setFilteredDataSource(items);
                 }}
               />
             )}
@@ -77,7 +114,7 @@ export default function AppPicker({
 }
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: defaultStyles.colors.light,
+    backgroundColor: defaultStyles.colors.white,
     marginVertical: 10,
     padding: 15,
     borderRadius: 25,
