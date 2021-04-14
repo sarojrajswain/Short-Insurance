@@ -5,7 +5,7 @@ import AppText from "./AppText";
 export default function PickerItem({ item, onPress }) {
   return (
     <TouchableOpacity onPress={onPress}>
-      <AppText style={styles.text}>{item.label}</AppText>
+      <AppText style={styles.text}>{item}</AppText>
     </TouchableOpacity>
   );
 }

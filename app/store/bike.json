@@ -1,0 +1,8 @@
+[
+  { "year": "2000", "make": "honda", "label": "Honda", "id": 1 },
+  { "year": "2000", "make": "audi", "label": "Audi", "id": 2 },
+  { "year": "2000", "make": "tesla", "label": "Tesla", "id": 3 },
+  { "year": "2001", "make": "maruti", "label": "Maruti", "id": 4 },
+  { "year": "2002", "make": "toyota", "label": "Toyota", "id": 5 },
+  { "year": "2003", "make": "mercedez", "label": "Mercedez", "id": 6 }
+]

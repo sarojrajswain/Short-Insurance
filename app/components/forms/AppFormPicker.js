@@ -12,20 +12,29 @@ function AppFormPicker({
   numberOfColumns,
   width,
   placeholder,
+  filterKey,
+  valueKey,
+  captionKey,
 }) {
   const { errors, setFieldValue, touched, values } = useFormikContext();
-  const [caption,  setCaption] = useState(items[0].label);
+  const [caption, setCaption] = useState(items[0].label);
+  const key = _.get(values, filterKey);;
 
   return (
     <>
       <AppPicker
+        valueKey={valueKey}
+        captionKey={captionKey}
+        filterKey={key}
         items={items}
         width={width}
         numberOfColumns={numberOfColumns}
         PickerItemComponent={PickerItemComponent}
         onSelectItem={(item) => {
-          setFieldValue(name, item.value);
-          setCaption(item.label);
+          // setFieldValue(name, item.value);
+          // setCaption(item.label);
+          setFieldValue(name, item[valueKey]);
+          setCaption(item[captionKey]);
         }}
         placeholder={placeholder}
         selectedItem={_.get(values, name)}

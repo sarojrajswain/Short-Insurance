@@ -28,6 +28,7 @@ import CustomCalendarPicker from "../components/CustomCalenderPicker";
 import CategoryPickerItem from "../components/CatagoryPickerItem";
 import { ceil } from "lodash";
 import colors from "../config/colors";
+import vehicleMake from '../store/bike.json'
 
 const type = [
   { value: "2", label: "2 Wheel", id: 1 },
@@ -152,6 +153,15 @@ const categories = [
   },
 ];
 
+// const vehicleMake = [
+//   { year: "2000", value: "honda", label: "Honda", id: 1 },
+//   { year: "2000", value: "audi", label: "Audi", id: 2 },
+//   { year: "2000", value: "tesla", label: "Tesla", id: 3 },
+//   { year: "2001", value: "maruti", label: "Maruti", id: 4 },
+//   { year: "2002", value: "toyota", label: "Toyota", id: 5 },
+//   { year: "2003", value: "mercedez", label: "Mercedez", id: 6 },
+// ];
+
 const validationSchema = Yup.object().shape({
   policy: Yup.object().shape({
     limit: Yup.string().required().label("Coverage Limit"),
@@ -197,6 +207,7 @@ function QuickQuote({ navigation }) {
               initialValues={{
                 policy: {
                   catagory: categories[0].value,
+                  vehicleMake:  "",
                   limit: "5000",
                   areYouStudent: false,
                   areYouPartOfRiderClub: false,
@@ -258,15 +269,32 @@ function QuickQuote({ navigation }) {
                   Vehicle Year
                 </AppText>
                 <AppFormPicker
-                  items={categories}
+                  items={vehicleMake}
+                  valueKey="year"
+                  captionKey="year"
                   name="policy.catagory"
-                  numberOfColumns={3}
-                  PickerItemComponent={CategoryPickerItem}
+                  numberOfColumns={1}
+                  //PickerItemComponent={CategoryPickerItem}
                   placeholder="Category"
                   width="100%"
+                  filterKey=""
                 />
               </View>
-              
+              <View style={{ flexDirection: "column" }}>
+                <AppText style={{ color: defaultStyles.colors.dark }}>
+                  Vehicle Year
+                </AppText>
+                <AppFormPicker
+                  valueKey="make"
+                  captionKey="make"
+                  items={vehicleMake}
+                  name="policy.vehicleMake"
+                  numberOfColumns={1}
+                  placeholder="Make"
+                  width="100%"
+                  filterKey="policy.risk.year"
+                />
+              </View>
               <View style={{ flexDirection: "column" }}>
                 <AppText style={{ color: defaultStyles.colors.dark }}>
                   Coverage Limit

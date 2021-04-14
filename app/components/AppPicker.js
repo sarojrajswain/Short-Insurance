@@ -16,6 +16,7 @@ import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import Screen from "./Screen";
 import PickerItem from "./PickerItem";
 import AppTextInput from './AppTextInput';
+import _ from 'lodash';
 
 export default function AppPicker({
   icon,
@@ -27,38 +28,66 @@ export default function AppPicker({
   onSelectItem,
   selectedLabel,
   width = "100%",
+  filterKey,
+  valueKey,
+  captionKey,
 }) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [filteredDataSource, setFilteredDataSource] = useState([]);
 
   const searchFilterFunction = (text) => {
     // Check if searched text is not blank
     if (text) {
+      
       // Inserted text is not blank
       // Filter the masterDataSource and update FilteredDataSource
-      const newData = items.filter(function (item) {
+      const newData = filteredDataSource.filter(function (item) {
         // Applying filter for the inserted text in search bar
-        const itemData = item.label ? item.label.toUpperCase() : ''.toUpperCase();
+        // const itemData = item.label
+        //   ? item.label.toUpperCase()
+        //   : "".toUpperCase();
+        const itemData = item[captionKey]
+          ? item[captionKey].toUpperCase()
+          : "".toUpperCase();
         const textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });
-      setFilteredDataSource(newData);
+      setFilteredDataSource([...new Set(newData)]);
       setSearch(text);
     } else {
+      if(filterKey){
+        console.log(filterKey);
+        setFilteredDataSource(() => {
+          return items.filter((cntry) => cntry.year === filterKey);
+        });
+      }
+      else
+      {
+        console.log(items);
+        const test=[...new Set(items)]
+        setFilteredDataSource(_.uniqBy(items,'year'));
+      }
+
       // Inserted text is blank
       // Update FilteredDataSource with masterDataSource
-      setFilteredDataSource(items);
+      //setFilteredDataSource(vehicleMake);
       setSearch(text);
     }
   };
-  
+
   return (
     <React.Fragment>
-      <TouchableWithoutFeedback onPress={() => {
-          setFilteredDataSource(items);
-          setModalVisible(true)}
-        }>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          //searchFilterFunction();
+          // setVehicleMake(() => {
+          //   return items.filter((cntry) => cntry.year === key);
+          // });
+          searchFilterFunction("");
+          setModalVisible(true);
+        }}
+      >
         <View style={[styles.container, { width }]}>
           <MaterialCommunityIcons
             name={icon}
@@ -86,19 +115,20 @@ export default function AppPicker({
         <Screen>
           <Button onPress={() => setModalVisible(false)} title="close" />
           <AppTextInput
-                onChangeText={(text) => searchFilterFunction(text)}
-                value={search}
-                underlineColorAndroid="transparent"
-                placeholder="Search Here"
-              />
+            onChangeText={(text) => searchFilterFunction(text)}
+            value={search}
+            underlineColorAndroid="transparent"
+            placeholder="Search Here"
+          />
           <FlatList
             numColumns={numberOfColumns}
             data={filteredDataSource}
-            keyExtractor={(item) => item.value.toString()}
+            keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <PickerItemComponent
-                item={item}
+                item={item[captionKey]}
                 onPress={() => {
+                  console.log(item);
                   setModalVisible(false);
                   onSelectItem(item);
                   setSearch("");
