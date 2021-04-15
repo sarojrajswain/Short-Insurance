@@ -206,16 +206,14 @@ function QuickQuote({ navigation }) {
             <AppForm
               initialValues={{
                 policy: {
-                  catagory: categories[0].value,
-                  vehicleMake:  "",
                   limit: "5000",
                   areYouStudent: false,
                   areYouPartOfRiderClub: false,
                   risk: {
                     vehicleType: "2W",
+                    year: "",
                     make: "",
                     model: "",
-                    year: "",
                   },
                 },
               }}
@@ -232,7 +230,7 @@ function QuickQuote({ navigation }) {
                   name="policy.risk.vehicleType"
                 />
               </View>
-              <View style={{ flexDirection: "column" }}>
+              {/* <View style={{ flexDirection: "column" }}>
                 <AppText style={{ color: defaultStyles.colors.dark }}>
                   Vehicle Make
                 </AppText>
@@ -263,7 +261,7 @@ function QuickQuote({ navigation }) {
                   items={year}
                   name={"policy.risk.year"}
                 />
-              </View>
+              </View> */}
               <View style={{ flexDirection: "column" }}>
                 <AppText style={{ color: defaultStyles.colors.dark }}>
                   Vehicle Year
@@ -272,27 +270,42 @@ function QuickQuote({ navigation }) {
                   items={vehicleMake}
                   valueKey="year"
                   captionKey="year"
-                  name="policy.catagory"
+                  name="policy.risk.year"
                   numberOfColumns={1}
                   //PickerItemComponent={CategoryPickerItem}
-                  placeholder="Category"
+                  placeholder="Year"
                   width="100%"
                   filterKey=""
                 />
               </View>
               <View style={{ flexDirection: "column" }}>
                 <AppText style={{ color: defaultStyles.colors.dark }}>
-                  Vehicle Year
+                  Vehicle Make
                 </AppText>
                 <AppFormPicker
                   valueKey="make"
                   captionKey="make"
                   items={vehicleMake}
-                  name="policy.vehicleMake"
+                  name="policy.risk.make"
                   numberOfColumns={1}
                   placeholder="Make"
                   width="100%"
                   filterKey="policy.risk.year"
+                />
+              </View>
+              <View style={{ flexDirection: "column" }}>
+                <AppText style={{ color: defaultStyles.colors.dark }}>
+                  Vehicle Model
+                </AppText>
+                <AppFormPicker
+                  valueKey="model"
+                  captionKey="model"
+                  items={vehicleMake}
+                  name="policy.risk.model"
+                  numberOfColumns={1}
+                  placeholder="Model"
+                  width="100%"
+                  filterKey="policy.risk.make"
                 />
               </View>
               <View style={{ flexDirection: "column" }}>

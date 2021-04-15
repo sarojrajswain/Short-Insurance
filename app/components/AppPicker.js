@@ -31,15 +31,18 @@ export default function AppPicker({
   filterKey,
   valueKey,
   captionKey,
+  searchKey,
 }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState("");
   const [filteredDataSource, setFilteredDataSource] = useState([]);
 
   const searchFilterFunction = (text) => {
+    
+    const test1 = searchKey.substring(searchKey.lastIndexOf(".")+1);
+    
     // Check if searched text is not blank
     if (text) {
-      
       // Inserted text is not blank
       // Filter the masterDataSource and update FilteredDataSource
       const newData = filteredDataSource.filter(function (item) {
@@ -48,25 +51,27 @@ export default function AppPicker({
         //   ? item.label.toUpperCase()
         //   : "".toUpperCase();
         const itemData = item[captionKey]
-          ? item[captionKey].toUpperCase()
-          : "".toUpperCase();
+        ? item[captionKey].toUpperCase()
+        : "".toUpperCase();
         const textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });
-      setFilteredDataSource([...new Set(newData)]);
+      setFilteredDataSource(_.unionBy(newData, valueKey));
       setSearch(text);
     } else {
-      if(filterKey){
-        console.log(filterKey);
-        setFilteredDataSource(() => {
-          return items.filter((cntry) => cntry.year === filterKey);
-        });
-      }
-      else
-      {
+      if (filterKey) {
+        const newData = items.filter(
+          (cntry) => cntry[test1] === filterKey);
+        setFilteredDataSource(_.uniqBy(newData,valueKey));  
+        // setFilteredDataSource(() => {
+        //   return items.filter(
+        //     (cntry) => cntry[test] === filterKey);
+        //   });
+         } 
+        else {
+        console.log('else');
         console.log(items);
-        const test=[...new Set(items)]
-        setFilteredDataSource(_.uniqBy(items,'year'));
+        setFilteredDataSource(_.uniqBy(items, valueKey));
       }
 
       // Inserted text is blank
@@ -123,7 +128,7 @@ export default function AppPicker({
           <FlatList
             numColumns={numberOfColumns}
             data={filteredDataSource}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => item[valueKey].toString()}
             renderItem={({ item }) => (
               <PickerItemComponent
                 item={item[captionKey]}

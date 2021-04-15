@@ -18,12 +18,13 @@ function AppFormPicker({
 }) {
   const { errors, setFieldValue, touched, values } = useFormikContext();
   const [caption, setCaption] = useState(items[0].label);
-  const key = _.get(values, filterKey);;
+  const key = _.get(values, filterKey);
 
   return (
     <>
       <AppPicker
         valueKey={valueKey}
+        searchKey={filterKey}
         captionKey={captionKey}
         filterKey={key}
         items={items}
