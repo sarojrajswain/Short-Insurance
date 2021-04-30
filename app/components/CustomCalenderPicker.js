@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Switch, StyleSheet, View } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFormikContext } from "formik";
@@ -20,7 +20,7 @@ export default function CustomCalendarPicker({
   const [isCalendarPickerVisible, setIsCalendarPickerVisible] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
-  const [selectedDate  =  defaultValue, setSelectedDate] = useState();
+  const [selectedDate = defaultValue, setSelectedDate] = useState();
 
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
@@ -40,7 +40,7 @@ export default function CustomCalendarPicker({
       date._d.getMonth() +
       "/" +
       date._d.getFullYear();
-    console.log(date.toDate().toLocaleDateString());
+
     setSelectedDate(date.toDate().toLocaleDateString());
     setFieldValue(name, date.toDate().toLocaleDateString());
     setIsCalendarPickerVisible(false);
@@ -58,6 +58,7 @@ export default function CustomCalendarPicker({
     setSelectedDate(date.toDate().toLocaleDateString());
     hideDatePicker();
   };
+
   return (
     <React.Fragment>
       <TouchableWithoutFeedback

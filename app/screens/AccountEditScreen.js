@@ -18,6 +18,7 @@ import accountsApi from "../api/account";
 import ActivityIndicator from "../components/ActivityIndicator";
 import AppButton from "../components/AppButton";
 import CustomDatePicker from '../components/CustomDatePicker';
+import AppSwitchSelector from "../components/forms/AppSwitchSelector";
 
 export default function AccountEditScreen({ navigation }) {
   const [error, setError] = useState();
@@ -83,19 +84,27 @@ export default function AccountEditScreen({ navigation }) {
         </>
       )}
       <Screen style={styles.container}>
-        <KeyboardAvoidingView  behavior="padding">
+        <KeyboardAvoidingView behavior="padding">
           <ScrollView>
             <AppForm
               initialValues={{
-                firstName: getAccountApi.data ? getAccountApi.data.firstName : "",
+                firstName: getAccountApi.data
+                  ? getAccountApi.data.firstName
+                  : "",
                 lastName: getAccountApi.data ? getAccountApi.data.lastName : "",
-                dateOfBirth: getAccountApi.data ? getAccountApi.data.dateOfBirth : "",
+                dateOfBirth: getAccountApi.data
+                  ? getAccountApi.data.dateOfBirth
+                  : "",
                 gender: getAccountApi.data ? getAccountApi.data.gender : "",
                 address: getAccountApi.data ? getAccountApi.data.address : "",
                 city: getAccountApi.data ? getAccountApi.data.city : "",
                 state: getAccountApi.data ? getAccountApi.data.state : "",
-                postalCode: getAccountApi.data ? getAccountApi.data.postalCode : "",
-                driverLicense: getAccountApi.data ? getAccountApi.data.driverLicense : "",
+                postalCode: getAccountApi.data
+                  ? getAccountApi.data.postalCode
+                  : "",
+                driverLicense: getAccountApi.data
+                  ? getAccountApi.data.driverLicense
+                  : "",
                 phoneNo: getAccountApi.data ? getAccountApi.data.phoneNo : "",
                 email: getAccountApi.data ? getAccountApi.data.email : "",
               }}
@@ -135,7 +144,9 @@ export default function AccountEditScreen({ navigation }) {
                   placeholder="Date of Birth (DD/MM/YYYY)"
                   name="dateOfBirth"
                   defaultValue={
-                    getAccountApi.data ? getAccountApi.data.dateOfBirth : "01/01/2020"
+                    getAccountApi.data
+                      ? getAccountApi.data.dateOfBirth
+                      : "01/01/2020"
                   }
                 />
               </View>
@@ -143,15 +154,15 @@ export default function AccountEditScreen({ navigation }) {
                 {/* <AppText style={{ color: defaultStyles.colors.dark }}>
                   Gender
                 </AppText> */}
-                <CustomSwitchSelector
+                <AppSwitchSelector
                   placeholder="Gender"
                   name="gender"
                   options={[
                     { label: "Male", value: "M" },
                     { label: "Female", value: "F" },
                   ]}
-                  defaultValue={()=> console.log('hi'),
-                    getAccountApi.data ? getAccountApi.data.gender : "M"
+                  defaultValue={
+                    getAccountApi.data ? getAccountApi.data.lastName : "M"
                   }
                 />
               </View>
@@ -168,7 +179,7 @@ export default function AccountEditScreen({ navigation }) {
                 />
               </View>
               <View>
-                {/* <AppText style={{ color: defaultStyles.colors.dark }}>
+                {/* <AppText style={{ color: defaultStyles.colors.dark }}> 
                   City
                 </AppText> */}
                 <AppFormField
@@ -200,7 +211,9 @@ export default function AccountEditScreen({ navigation }) {
                   placeholder="Postal Code"
                   name="postalCode"
                   defaultValue={
-                    getAccountApi.data ? String(getAccountApi.data.postalCode) : ""
+                    getAccountApi.data
+                      ? String(getAccountApi.data.postalCode)
+                      : ""
                   }
                 />
               </View>

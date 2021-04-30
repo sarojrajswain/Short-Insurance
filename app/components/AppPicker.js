@@ -36,6 +36,8 @@ export default function AppPicker({
   const [modalVisible, setModalVisible] = useState(false);
   const [search, setSearch] = useState("");
   const [filteredDataSource, setFilteredDataSource] = useState([]);
+  const [originalFilteredData, setoriginalFilteredData] = useState([]);
+  const searchTextPlaceholder = `Search ${placeholder}....`;
 
   const searchFilterFunction = (text) => {
     
@@ -45,33 +47,30 @@ export default function AppPicker({
     if (text) {
       // Inserted text is not blank
       // Filter the masterDataSource and update FilteredDataSource
-      const newData = filteredDataSource.filter(function (item) {
+      const newData = originalFilteredData.filter(function (item) {
         // Applying filter for the inserted text in search bar
-        // const itemData = item.label
-        //   ? item.label.toUpperCase()
-        //   : "".toUpperCase();
-        const itemData = item[captionKey]
-        ? item[captionKey].toUpperCase()
-        : "".toUpperCase();
-        const textData = text.toUpperCase();
-        return itemData.indexOf(textData) > -1;
+        if(!isNaN(text))
+        {
+         return item[captionKey].toString().indexOf(text) > -1;
+        }
+        else{
+          const itemData = item[captionKey]
+            ? item[captionKey].toUpperCase()
+            : "".toUpperCase();
+          const textData = text.toUpperCase();
+          return itemData.indexOf(textData) > -1;
+        }
       });
       setFilteredDataSource(_.unionBy(newData, valueKey));
       setSearch(text);
     } else {
       if (filterKey) {
-        const newData = items.filter(
-          (cntry) => cntry[test1] === filterKey);
-        setFilteredDataSource(_.uniqBy(newData,valueKey));  
-        // setFilteredDataSource(() => {
-        //   return items.filter(
-        //     (cntry) => cntry[test] === filterKey);
-        //   });
-         } 
-        else {
-        console.log('else');
-        console.log(items);
+        const newData = items.filter((cntry) => cntry[test1] === filterKey);
+        setFilteredDataSource(_.uniqBy(newData, valueKey));
+        setoriginalFilteredData(_.uniqBy(newData,valueKey));
+      } else {
         setFilteredDataSource(_.uniqBy(items, valueKey));
+        setoriginalFilteredData(_.uniqBy(items,valueKey));
       }
 
       // Inserted text is blank
@@ -84,11 +83,7 @@ export default function AppPicker({
   return (
     <React.Fragment>
       <TouchableWithoutFeedback
-        onPress={() => {
-          //searchFilterFunction();
-          // setVehicleMake(() => {
-          //   return items.filter((cntry) => cntry.year === key);
-          // });
+        onPress={(e) => {
           searchFilterFunction("");
           setModalVisible(true);
         }}
@@ -123,7 +118,7 @@ export default function AppPicker({
             onChangeText={(text) => searchFilterFunction(text)}
             value={search}
             underlineColorAndroid="transparent"
-            placeholder="Search Here"
+            placeholder={searchTextPlaceholder}
           />
           <FlatList
             numColumns={numberOfColumns}
@@ -133,7 +128,6 @@ export default function AppPicker({
               <PickerItemComponent
                 item={item[captionKey]}
                 onPress={() => {
-                  console.log(item);
                   setModalVisible(false);
                   onSelectItem(item);
                   setSearch("");

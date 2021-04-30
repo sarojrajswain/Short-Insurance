@@ -21,6 +21,7 @@ function AppTextInput(
     secureTextEntry,
     textContentType,
     keyboardType,
+    onChange,
   },
   ref
 ) {
@@ -33,6 +34,7 @@ function AppTextInput(
         style={styles.icon}
       />
       <TextInput
+        onChange={onChange}
         value={value}
         onChangeText={onChangeText}
         onBlur={onBlur}

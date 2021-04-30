@@ -55,6 +55,11 @@ export default function AccountScreen({ navigation }) {
         onPress={() => generateIDCard()}
       ></ListItem>
       <ListItem
+        title="Render ID Card"
+        IconComponent={<Icon name="id-card" backgroundColor={colors.blue} />}
+        onPress={() => navigation.navigate("RenderIDCard")}
+      ></ListItem>
+      <ListItem
         title="Change Password"
         IconComponent={<Icon name="lock-open" backgroundColor={colors.blue} />}
         onPress={() => navigation.navigate("ChangePassword")}

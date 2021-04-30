@@ -7,12 +7,14 @@ import SwitchSelector from "react-native-switch-selector";
 import _ from "lodash";
 import colors from "../config/colors";
 
-export default function CustomSwitchSelector({ name, options, defaultValue}) {
+export default function CustomSwitchSelector({
+  name,
+  options,
+  initialValue,
+  onPress,
+}) {
   const { errors, setFieldValue, touched, values } = useFormikContext();
-  const defaultIndex = parseInt(_.findIndex(options,{value: defaultValue}));
 
-  
-const i = defaultValue;
   return (
     <React.Fragment>
       <SwitchSelector
@@ -20,14 +22,9 @@ const i = defaultValue;
         name={name}
         style={{ paddingVertical: 10 }}
         //initial={parseInt(_.findIndex(options,{value: i}))}
-        initial={0}
+        initial={initialValue}
         height={60}
-        onPress={(value) => 
-          {
-            console.log(value)
-            setFieldValue(name, value)
-          }
-          }
+        onPress={onPress}
         //value={values[name]}
         textColor={defaultStyles.colors.medium} //'#7a44cf'
         selectedColor={defaultStyles.colors.light}

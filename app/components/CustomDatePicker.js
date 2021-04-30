@@ -43,6 +43,7 @@ export default function CustomDatePicker({
     setSelectedDate(date.toLocaleDateString());
     hideDatePicker();
   };
+
   return (
     <React.Fragment>
       <TouchableWithoutFeedback
